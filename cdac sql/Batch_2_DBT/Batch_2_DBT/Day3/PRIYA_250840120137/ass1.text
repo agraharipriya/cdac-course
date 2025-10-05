@@ -1,0 +1,405 @@
+-------------------------------------------EMP TABLE--------------------------------------------------------------------------------------
+
+ select * from EMP;
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+
+
+
+--------------------------------------DEPT TABLE-------------------------------------------------------------------------------------------------------
+select * from DEPT;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+
+
+---------------------------------------SALGRADE TABLE-----------------------------------------------------------------------------------------------
+ SELECT * FROM SALGRADE;
++-------+-------+-------+
+| GRADE | LOSAL | HISAL |
++-------+-------+-------+
+|     1 |   700 |  1200 |
+|     2 |  1201 |  1400 |
+|     3 |  1401 |  2000 |
+|     4 |  2001 |  3000 |
+|     5 |  3001 |  9999 |
++-------+-------+-------+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//1.List details of employees as ename, deptno, dname, sal, comm . 
+
+SELECT E.ENAME, E.DEPTNO,D.DNAME,E.SAL,E.COMM
+FROM EMP E, DEPT D
+WHERE E.DEPTNO=D.DEPTNO;
+
++--------+--------+------------+------+------+
+| ENAME  | DEPTNO | DNAME      | SAL  | COMM |
++--------+--------+------------+------+------+
+| SMITH  |     20 | RESEARCH   |  800 | NULL |
+| ALLEN  |     30 | SALES      | 1600 |  300 |
+| WARD   |     30 | SALES      | 1250 |  500 |
+| JONES  |     20 | RESEARCH   | 2975 | NULL |
+| MARTIN |     30 | SALES      | 1250 | 1400 |
+| BLAKE  |     30 | SALES      | 2850 | NULL |
+| CLARK  |     10 | ACCOUNTING | 2450 | NULL |
+| SCOTT  |     20 | RESEARCH   | 3000 | NULL |
+| KING   |     10 | ACCOUNTING | 5000 | NULL |
+| TURNER |     30 | SALES      | 1500 |    0 |
+| ADAMS  |     20 | RESEARCH   | 1100 | NULL |
+| JAMES  |     30 | SALES      |  950 | NULL |
+| FORD   |     20 | RESEARCH   | 3000 | NULL |
+| MILLER |     10 | ACCOUNTING | 1300 | NULL |
++--------+--------+------------+------+------+
+
+
+//2.Display details of employees as empno,ename,sal,job, deptno,dname,loc   for all employees working as a clerk or salesman and earning sal <2000.
+
+
+SELECT E.EMPNO, E.ENAME, E.SAL, E.JOB, E.DEPTNO, D.DNAME, D.LOC
+FROM EMP E , DEPT D
+WHERE E.DEPTNO=D.DEPTNO AND E.JOB IN ('CLERK','SALESMAN') AND E.SAL<2000; 
+
++-------+--------+------+----------+--------+------------+----------+
+| EMPNO | ENAME  | SAL  | JOB      | DEPTNO | DNAME      | LOC      |
++-------+--------+------+----------+--------+------------+----------+
+|  7369 | SMITH  |  800 | CLERK    |     20 | RESEARCH   | DALLAS   |
+|  7499 | ALLEN  | 1600 | SALESMAN |     30 | SALES      | CHICAGO  |
+|  7521 | WARD   | 1250 | SALESMAN |     30 | SALES      | CHICAGO  |
+|  7654 | MARTIN | 1250 | SALESMAN |     30 | SALES      | CHICAGO  |
+|  7844 | TURNER | 1500 | SALESMAN |     30 | SALES      | CHICAGO  |
+|  7876 | ADAMS  | 1100 | CLERK    |     20 | RESEARCH   | DALLAS   |
+|  7900 | JAMES  |  950 | CLERK    |     30 | SALES      | CHICAGO  |
+|  7934 | MILLER | 1300 | CLERK    |     10 | ACCOUNTING | NEW YORK |
++-------+--------+------+----------+--------+------------+----------+
+
+
+
+//3.Display ename,deptno,dname,sal and grade of employee 
+
+SELECT E.ENAME ,E.DEPTNO, D.DNAME, E.SAL, S.GRADE
+FROM EMP E , DEPT D, SALGRADE S
+WHERE E.DEPTNO= D.DEPTNO AND E.SAL BETWEEN S.LOSAL AND S.HISAL;
+
++--------+--------+------------+------+-------+
+| ENAME  | DEPTNO | DNAME      | SAL  | GRADE |
++--------+--------+------------+------+-------+
+| SMITH  |     20 | RESEARCH   |  800 |     1 |
+| ALLEN  |     30 | SALES      | 1600 |     3 |
+| WARD   |     30 | SALES      | 1250 |     2 |
+| JONES  |     20 | RESEARCH   | 2975 |     4 |
+| MARTIN |     30 | SALES      | 1250 |     2 |
+| BLAKE  |     30 | SALES      | 2850 |     4 |
+| CLARK  |     10 | ACCOUNTING | 2450 |     4 |
+| SCOTT  |     20 | RESEARCH   | 3000 |     4 |
+| KING   |     10 | ACCOUNTING | 5000 |     5 |
+| TURNER |     30 | SALES      | 1500 |     3 |
+| ADAMS  |     20 | RESEARCH   | 1100 |     1 |
+| JAMES  |     30 | SALES      |  950 |     1 |
+| FORD   |     20 | RESEARCH   | 3000 |     4 |
+| MILLER |     10 | ACCOUNTING | 1300 |     2 |
++--------+--------+------------+------+-------+
+
+
+//4.Display the information of department i.e deptno, dname and loc in which clerks are working.
+
+SELECT E.DEPTNO,D.DNAME,D.LOC 
+FROM EMP E, DEPT D
+WHERE E.DEPTNO=D.DEPTNO AND E.JOB='CLERK';
+
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     20 | RESEARCH   | DALLAS   |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     10 | ACCOUNTING | NEW YORK |
++--------+------------+----------+
+
+
+//5.Find all employees with name ending with R .
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE '%R';
+
++--------+
+| ENAME  |
++--------+
+| TURNER |
+| MILLER |
++--------+
+
+ 
+//6.Find all employees with name starting with M and ending with R.
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE 'M%R';
+
++--------+
+| ENAME  |
++--------+
+| MILLER |
++--------+
+
+
+//7.To find all employees with name starting with either M or A.
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE 'M%' OR ENAME LIKE 'A%';
+
++--------+
+| ENAME  |
++--------+
+| ALLEN  |
+| MARTIN |
+| ADAMS  |
+| MILLER |
++--------+
+
+
+8.List the employees name having letter 'L' as the second character.
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE '_L%';
+
++-------+
+| ENAME |
++-------+
+| ALLEN |
+| BLAKE |
+| CLARK |
++-------+
+
+
+//9.Find all employees with name having L at 3 rd position.
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE '__L%';
+
++--------+
+| ENAME  |
++--------+
+| ALLEN  |
+| MILLER |
++--------+
+
+
+//10.To list all employees with name ending by ES.  
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE '%ES';
+
+
++-------+
+| ENAME |
++-------+
+| JONES |
+| JAMES |
++-------+
+
+
+//11.To list all employees with job starting with C and ending with K.
+
+SELECT ENAME, JOB
+FROM EMP
+WHERE JOB LIKE 'C%K'; 
+
++--------+-------+
+| ENAME  | JOB   |
++--------+-------+
+| SMITH  | CLERK |
+| ADAMS  | CLERK |
+| JAMES  | CLERK |
+| MILLER | CLERK |
++--------+-------+
+
+
+//12.Find all employees with name starting with M, having  L at 3 rd position and ends with R.
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE 'M%__L%R'; 
+
++--------+
+| ENAME  |
++--------+
+| MILLER |
++--------+
+
+//13.Find all employees with name having L at 3 rd position and E at second last position.
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE '__L%E_';
+
++--------+
+| ENAME  |
++--------+
+| ALLEN  |
+| MILLER |
++--------+
+
+
+//14.Find all employees with name not starting with A  
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME NOT LIKE 'A%';
++--------+
+| ENAME  |
++--------+
+| SMITH  |
+| WARD   |
+| JONES  |
+| MARTIN |
+| BLAKE  |
+| CLARK  |
+| SCOTT  |
+| KING   |
+| TURNER |
+| JAMES  |
+| FORD   |
+| MILLER |
++--------+
+
+
+//15.Display all employees with sal >1000 AND sal<3000 and job has A at starting position and ends with T.
+
+SELECT *
+FROM EMP
+WHERE JOB LIKE 'A%T' AND SAL BETWEEN 1000 AND 3000;
+
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7902 | FORD  | ANALYST | 7566 | 1981-12-03 | 3000 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+
+
+//16.Write a query  to display empno, ename, sal , increased sal by 10% and commission for all employees  whose  name starts with A,M or S.
+
+SELECT EMPNO, ENAME, SAL, SAL*0.1+SAL AS "INCREASED SAL", COMM
+FROM EMP
+WHERE ENAME LIKE 'A%' OR ENAME LIKE 'M%' OR ENAME LIKE 'S%';
+
++-------+--------+------+---------------+------+
+| EMPNO | ENAME  | SAL  | INCREASED SAL | COMM |
++-------+--------+------+---------------+------+
+|  7369 | SMITH  |  800 |           880 | NULL |
+|  7499 | ALLEN  | 1600 |          1760 |  300 |
+|  7654 | MARTIN | 1250 |          1375 | 1400 |
+|  7788 | SCOTT  | 3000 |          3300 | NULL |
+|  7876 | ADAMS  | 1100 |          1210 | NULL |
+|  7934 | MILLER | 1300 |          1430 | NULL |
++-------+--------+------+---------------+------+
+
+
+//17.List the employees name having 'E' as a second last character.
+
+SELECT ENAME
+FROM EMP
+WHERE ENAME LIKE '%E_';
+
++--------+
+| ENAME  |
++--------+
+| ALLEN  |
+| JONES  |
+| TURNER |
+| JAMES  |
+| MILLER |
++--------+
+
+
+//18.List employees whose name starts with either 'A' or 'S' in dept 20.
+
+SELECT ENAME , DEPTNO
+FROM EMP
+WHERE (ENAME LIKE 'A%' OR ENAME LIKE 'S%') AND DEPTNO =20;
+
++-------+--------+
+| ENAME | DEPTNO |
++-------+--------+
+| SMITH |     20 |
+| SCOTT |     20 |
+| ADAMS |     20 |
++-------+--------+
+
+
+//19.To list all employees with comm is null and name starts with ‘S’
+
+SELECT *
+FROM EMP
+WHERE COMM IS NULL AND ENAME LIKE 'S%';
+
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3000 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+
+
+//20.List all the employee whose name does not end with 'S' in dept 20 and 30?
+
+SELECT *
+FROM EMP
+WHERE ENAME NOT LIKE 'S%' AND (DEPTNO =20 OR DEPTNO=30);
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER  | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 | 3000 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+
+
+//21.Display dept names which are having letter 'O'.
+
+SELECT DNAME
+FROM DEPT
+WHERE DNAME LIKE '%O%';
+
++------------+
+| DNAME      |
++------------+
+| ACCOUNTING |
+| OPERATIONS |
++------------+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+

@@ -1,0 +1,746 @@
+//1.Create a view emp_view having following columns
+empno,ename,deptno,sal, comm.
+
+CREATE VIEW EMP_VIEW
+AS 
+SELECT EMPNO,ENAME,DEPTNO,SAL,COMM
+FROM EMP;
+
+SELECT * FROM EMP_VIEW;
+
++-------+---------+--------+--------+------+
+| EMPNO | ENAME   | DEPTNO | SAL    | COMM |
++-------+---------+--------+--------+------+
+|  7369 | SMITH   |     20 |    880 | NULL |
+|  7499 | ALLEN   |     30 |   1760 |  300 |
+|  7521 | WARD    |     30 |   1375 |  500 |
+|  7566 | JONES   |     20 | 3272.5 | NULL |
+|  7654 | MARTIN  |     30 |   1375 | 1400 |
+|  7698 | BLAKE   |     30 |   3135 | NULL |
+|  7782 | CLARK   |     10 |   2695 | NULL |
+|  7788 | SCOTT   |     20 |   3300 | NULL |
+|  7839 | KING    |     10 |   5500 | NULL |
+|  7844 | TURNER  |     30 |   1650 |    0 |
+|  7876 | ADAMS   |     20 |   1210 | NULL |
+|  7900 | JAMES   |     30 |   1045 | NULL |
+|  7902 | FORD    |     20 |   3300 | NULL |
+|  7934 | MILLER  |     10 |   1430 | NULL |
+|  7791 | Priya   |     80 |   3450 |  400 |
+|  7799 | Rishita |   NULL |   3400 |  230 |
++-------+---------+--------+--------+------+
+16 rows in set (0.000 sec)
+
+
+//2.Insert new employee having following information in the view
+(1111,'Geeta',20,10000,300),check the data inserted in the view as well as the base table.
+
+INSERT INTO EMP_VIEW 
+VALUES (1111,'Geeta',20,10000,300);
+
+SELECT * FROM EMP_VIEW;
++-------+---------+--------+--------+------+
+| EMPNO | ENAME   | DEPTNO | SAL    | COMM |
++-------+---------+--------+--------+------+
+|  7369 | SMITH   |     20 |    880 | NULL |
+|  7499 | ALLEN   |     30 |   1760 |  300 |
+|  7521 | WARD    |     30 |   1375 |  500 |
+|  7566 | JONES   |     20 | 3272.5 | NULL |
+|  7654 | MARTIN  |     30 |   1375 | 1400 |
+|  7698 | BLAKE   |     30 |   3135 | NULL |
+|  7782 | CLARK   |     10 |   2695 | NULL |
+|  7788 | SCOTT   |     20 |   3300 | NULL |
+|  7839 | KING    |     10 |   5500 | NULL |
+|  7844 | TURNER  |     30 |   1650 |    0 |
+|  7876 | ADAMS   |     20 |   1210 | NULL |
+|  7900 | JAMES   |     30 |   1045 | NULL |
+|  7902 | FORD    |     20 |   3300 | NULL |
+|  7934 | MILLER  |     10 |   1430 | NULL |
+|  7791 | Priya   |     80 |   3450 |  400 |
+|  7799 | Rishita |   NULL |   3400 |  230 |
+|  1111 | Geeta   |     20 |  10000 |  300 |
++-------+---------+--------+--------+------+
+17 rows in set (0.000 sec)
+
+SELECT * FROM EMP;
+
++-------+---------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME   | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+---------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH   | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN   | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 |
+|  7521 | WARD    | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 |
+|  7566 | JONES   | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN  | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 |
+|  7698 | BLAKE   | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK   | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT   | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING    | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER  | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS   | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES   | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD    | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER  | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7791 | Priya   | manager   | 7798 | 1981-02-20 |   3450 |  400 |     80 |
+|  7799 | Rishita | analyst   | 7790 | 1981-02-20 |   3400 |  230 |   NULL |
+|  1111 | Geeta   | NULL      | NULL | NULL       |  10000 |  300 |     20 |
++-------+---------+-----------+------+------------+--------+------+--------+
+17 rows in set (0.000 sec)
+
+
+
+
+//3.Create a view for deptno 20 as emp_v20 having following cloumns. This view should contain rows from dept20 only.
+empno,ename,deptno,job.
+
+CREATE VIEW EMP_V20
+AS
+SELECT EMPNO,ENAME,DEPTNO,JOB
+FROM EMP
+WHERE DEPTNO=20;
+
+MariaDB [Automobile]> SELECT * FROM EMP_V20;
++-------+-------+--------+---------+
+| EMPNO | ENAME | DEPTNO | JOB     |
++-------+-------+--------+---------+
+|  7369 | SMITH |     20 | CLERK   |
+|  7566 | JONES |     20 | MANAGER |
+|  7788 | SCOTT |     20 | ANALYST |
+|  7876 | ADAMS |     20 | CLERK   |
+|  7902 | FORD  |     20 | ANALYST |
+|  1111 | Geeta |     20 | NULL    |
++-------+-------+--------+---------+
+6 rows in set (0.000 sec)
+
+
+
+//4.Insert new employee  in view emp_v20 having following information
+(2222,'Raj',40,'Analyst') 
+check the data inserted in the base table emp and also in the view.
+
+INSERT INTO EMP_V20
+VALUES (2222,'Raj',40,'Analyst');
+
+MariaDB [Automobile]> SELECT * FROM EMP_V20;
++-------+-------+--------+---------+
+| EMPNO | ENAME | DEPTNO | JOB     |
++-------+-------+--------+---------+
+|  7369 | SMITH |     20 | CLERK   |
+|  7566 | JONES |     20 | MANAGER |
+|  7788 | SCOTT |     20 | ANALYST |
+|  7876 | ADAMS |     20 | CLERK   |
+|  7902 | FORD  |     20 | ANALYST |
+|  1111 | Geeta |     20 | NULL    |
++-------+-------+--------+---------+
+6 rows in set (0.000 sec)
+
+MariaDB [Automobile]> SELECT * FROM EMP;
++-------+---------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME   | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+---------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH   | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN   | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 |
+|  7521 | WARD    | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 |
+|  7566 | JONES   | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN  | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 |
+|  7698 | BLAKE   | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK   | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT   | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING    | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER  | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS   | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES   | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD    | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER  | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7791 | Priya   | manager   | 7798 | 1981-02-20 |   3450 |  400 |     80 |
+|  7799 | Rishita | analyst   | 7790 | 1981-02-20 |   3400 |  230 |   NULL |
+|  1111 | Geeta   | NULL      | NULL | NULL       |  10000 |  300 |     20 |
+|  2222 | Raj     | Analyst   | NULL | NULL       |   NULL | NULL |     40 |
++-------+---------+-----------+------+------------+--------+------+--------+
+18 rows in set (0.000 sec)
+
+
+
+//5.Create a view for deptno 20 as new_emp_v20 having following cloumns
+empno,ename,deptno,job with constraint 'check option' .
+
+CREATE VIEW NEW_EMP_V20
+AS
+SELECT EMPNO,ENAME,DEPTNO,JOB
+FROM EMP
+WHERE DEPTNO=20
+WITH CHECK OPTION;
+
+MariaDB [Automobile]> SELECT * FROM NEW_EMP_V20;
++-------+-------+--------+---------+
+| EMPNO | ENAME | DEPTNO | JOB     |
++-------+-------+--------+---------+
+|  7369 | SMITH |     20 | CLERK   |
+|  7566 | JONES |     20 | MANAGER |
+|  7788 | SCOTT |     20 | ANALYST |
+|  7876 | ADAMS |     20 | CLERK   |
+|  7902 | FORD  |     20 | ANALYST |
+|  1111 | Geeta |     20 | NULL    |
++-------+-------+--------+---------+
+6 rows in set (0.000 sec)
+
+
+//6.Insert below data in new_emp_v20 having following information
+(2222,'Raj',40,'Analyst')
+check the data inserted in the base table emp and also in the view.
+
+INSERT INTO NEW_EMP_V20
+VALUES (2222,'Raj',40,'Analyst');
+
+ERROR 1369 (44000): CHECK OPTION failed `Automobile`.`NEW_EMP_V20`
+
+MariaDB [Automobile]> SELECT * FROM NEW_EMP_V20;
++-------+-------+--------+---------+
+| EMPNO | ENAME | DEPTNO | JOB     |
++-------+-------+--------+---------+
+|  7369 | SMITH |     20 | CLERK   |
+|  7566 | JONES |     20 | MANAGER |
+|  7788 | SCOTT |     20 | ANALYST |
+|  7876 | ADAMS |     20 | CLERK   |
+|  7902 | FORD  |     20 | ANALYST |
+|  1111 | Geeta |     20 | NULL    |
++-------+-------+--------+---------+
+6 rows in set (0.000 sec)
+
+
+MariaDB [Automobile]> SELECT * FROM EMP;
++-------+---------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME   | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+---------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH   | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN   | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 |
+|  7521 | WARD    | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 |
+|  7566 | JONES   | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN  | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 |
+|  7698 | BLAKE   | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK   | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT   | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING    | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER  | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS   | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES   | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD    | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER  | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7791 | Priya   | manager   | 7798 | 1981-02-20 |   3450 |  400 |     80 |
+|  7799 | Rishita | analyst   | 7790 | 1981-02-20 |   3400 |  230 |   NULL |
+|  1111 | Geeta   | NULL      | NULL | NULL       |  10000 |  300 |     20 |
+|  2222 | Raj     | Analyst   | NULL | NULL       |   NULL | NULL |     40 |
++-------+---------+-----------+------+------------+--------+------+--------+
+18 rows in set (0.000 sec)
+
+
+
+//7.Check all  created views.
+SHOW FULL TABLES;
+
+SHOW FULL TABLES  WHERE TABLE_TYPE LIKE '%VIEW%';
+
++----------------------+------------+
+| Tables_in_Automobile | Table_type |
++----------------------+------------+
+| EMP_V20              | VIEW       |
+| EMP_VIEW             | VIEW       |
+| NEW_EMP_V20          | VIEW       |
++----------------------+------------+
+3 rows in set (0.000 sec)
+
+
+//8.Create a view with columns as empno,ename, deptno and dname.
+Check if you can enter the data in the above view.
+  
+CREATE VIEW NEW_EMP_V
+AS
+SELECT E.EMPNO, E.ENAME,E.DEPTNO,D.DNAME
+FROM EMP E 
+JOIN DEPT D
+ON E.DEPTNO=D.DEPTNO;
+  
+ MariaDB [Automobile]>   SELECT * FROM NEW_EMP_V;
++-------+--------+--------+------------+
+| EMPNO | ENAME  | DEPTNO | DNAME      |
++-------+--------+--------+------------+
+|  7369 | SMITH  |     20 | RESEARCH   |
+|  7499 | ALLEN  |     30 | SALES      |
+|  7521 | WARD   |     30 | SALES      |
+|  7566 | JONES  |     20 | RESEARCH   |
+|  7654 | MARTIN |     30 | SALES      |
+|  7698 | BLAKE  |     30 | SALES      |
+|  7782 | CLARK  |     10 | ACCOUNTING |
+|  7788 | SCOTT  |     20 | RESEARCH   |
+|  7839 | KING   |     10 | ACCOUNTING |
+|  7844 | TURNER |     30 | SALES      |
+|  7876 | ADAMS  |     20 | RESEARCH   |
+|  7900 | JAMES  |     30 | SALES      |
+|  7902 | FORD   |     20 | RESEARCH   |
+|  7934 | MILLER |     10 | ACCOUNTING |
+|  1111 | Geeta  |     20 | RESEARCH   |
+|  2222 | Raj    |     40 | OPERATIONS |
++-------+--------+--------+------------+
+16 rows in set (0.000 sec)
+
+ INSERT INTO NEW_EMP_V(EMPNO,ENAME,DEPTNO,DNAME)
+ VALUES (3333,'PRIYA',50,'TRAINING');
+  
+ERROR 1393 (HY000): Can not modify more than one base table through a join view 'Automobile.NEW_EMP_V'
+  
+//9.Create index on any table and check the indexes using proper command.
+CREATE INDEX EMP_IDX ON EMP(EMPNO);
+
+MariaDB [Automobile]> DESCRIBE EMP;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   | MUL | NULL    |       |
+| ENAME    | varchar(10)      | YES  |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  |     | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+8 rows in set (0.013 sec)
+
+===============================SHOW INDEXES IN THE TABLE====================
+
+MariaDB [Automobile]> SHOW INDEXES FROM EMP;
++-------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+
+| Table | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Ignored |
++-------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+
+| EMP   |          1 | EMP_IDX  |            1 | EMPNO       | A         |          16 |     NULL | NULL   |      | BTREE      |         |               | NO      |
++-------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+
+1 row in set (0.000 sec)
+
+
+===============================DELETE INDEX===============================
+
+DROP INDEX EMP_IDX ON EMP;
+
+MariaDB [Automobile]> DESCRIBE EMP;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   |     | NULL    |       |
+| ENAME    | varchar(10)      | YES  |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  |     | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+8 rows in set (0.001 sec)
+
+====================================DEPT ,EMP,SALGRADE TABLE=============================================
+ select * from DEPT;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select * from emp;
++-------+--------+-----------+------+------------+---------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
++-------+--------+-----------+------+------------+---------+---------+--------+
+14 rows in set (0.01 sec)
+
+
+mysql> select * from salgrade;
++-------+-------+-------+
+| GRADE | LOSAL | HISAL |
++-------+-------+-------+
+|     1 |   700 |  1200 |
+|     2 |  1201 |  1400 |
+|     3 |  1401 |  2000 |
+|     4 |  2001 |  3000 |
+|     5 |  3001 |  9999 |
++-------+-------+-------+
+5 rows in set (0.00 sec)
+
+=====================================================STORED PROCEDURE=====================================================
+
+//1.Write a stored procedure which will find avg of all the salaries in the table. Display avg sal inside  the procedure.
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS AVG_SAL;
+CREATE PROCEDURE AVG_SAL()
+BEGIN
+	DECLARE AV_SAL DECIMAL(10,2);
+	SELECT AVG(SAL) INTO AV_SAL
+	FROM EMP;
+	SELECT AV_SAL AS AVERAGE_SAL;
+END //
+
+DELIMITER ;
+
+mysql> CALL AVG_SAL;
++-------------+
+| AVERAGE_SAL |
++-------------+
+|     2073.21 |
++-------------+
+1 row in set (0.01 sec)
+
+
+2.Write a stored procedure which will find avg salary of dept no 20. Display  avg salary out of the procedure.
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS AVG_SAL;
+CREATE PROCEDURE AVG_SAL(OUT P_AVG_SAL DECIMAL(10,2))
+BEGIN
+	
+	SELECT AVG(IFNULL(SAL,0)) INTO P_AVG_SAL
+        FROM EMP
+ 	WHERE DEPTNO=20;
+END //	
+
+DELIMITER ;
+
+
+mysql> CALL AVG_sAL(@AVG_SALARY);
+mysql> SELECT @AVG_SALARY;
++-------------+
+| @AVG_SALARY |
++-------------+
+|     2175.00 |
++-------------+
+1 row in set (0.03 sec)
+
+
+
+
+//3.Write a stored procedure which will find avg salary for any deptno passed to it.  Pass deptno as IN  parameter and avg(sal) as out parameter.
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS AVG_SAL;
+CREATE PROCEDURE AVG_SAL(IN DEPT_NO INT, OUT AVG_SALARY DECIMAL(10,2))
+BEGIN
+	SELECT AVG(IFNULL(SAL,0)) INTO AVG_SALARY
+	FROM EMP
+	WHERE DEPTNO=DEPT_NO; 
+END //
+
+DELIMITER ;
+
+mysql> SET @P=30;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL AVG_SAL(@P,@RESULT);
+mysql> SELECT @RESULT;
++---------+
+| @RESULT |
++---------+
+| 1566.67 |
++---------+
+1 row in set (0.00 sec)
+
+          
+//4.Write a procedure to calculate total salary of an employee. Pass empno as a IN parameter to to procedure. 
+Total sal = sal +comm.
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS P_TOTAL_SAL;
+CREATE PROCEDURE P_TOTAL_SAL(IN EMP_NO INT)
+BEGIN
+	DECLARE TOTAL_SAL DECIMAL(10,2);
+	SELECT SAL+IFNULL(COMM,0) INTO TOTAL_SAL
+	FROM EMP
+	WHERE EMPNO=EMP_NO;
+	SELECT TOTAL_SAL AS TOTAL_SALARY;
+END $$
+
+DELIMITER ;
+ 
+mysql> SET @P=7902;
+mysql> CALL P_TOTAL_SAL(@P);
++--------------+
+| TOTAL_SALARY |
++--------------+
+|      3000.00 |
++--------------+
+1 row in set (0.03 sec)
+
+//5.Pass any number to the procedure and check if it is a perfect number. If the number is perfect, procedure should set value of out parameter as 1 otherwise as 0.   
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS PER_NUM;
+CREATE PROCEDURE PER_NUM(IN NUM INT,OUT RESULT INT)
+BEGIN
+	DECLARE I INT DEFAULT 1;
+	DECLARE SUM INT DEFAULT 0;
+	WHILE (I <= NUM / 2)
+	DO
+		IF ((NUM % I )=0) THEN
+		SET SUM =SUM+ I;
+		END IF;
+ 	SET I=I+1;
+	END WHILE;
+
+	IF (SUM = NUM) THEN
+		SET RESULT=1;
+	ELSE
+	     SET RESULT=0;
+	END IF;
+
+	
+
+END //
+
+DELIMITER ;
+	
+
+mysql> SET @N=6;
+mysql> CALL PER_NUM(@N,@R);
+mysql> SELECT @R;
++------+
+| @R   |
++------+
+|    1 |
++------+
+1 row in set (0.00 s
+
+//6.Pass empno as a in parameter to the procedure. If empno is found in the table then, display corrosponding salary out of the procedure. If empno is not found in the table then, display 0 out of the parameter.   
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS EMP_FOUND;
+CREATE PROCEDURE EMP_FOUND(IN EMP_NO INT,OUT RESULT DECIMAL(10,2))
+BEGIN
+	
+	DECLARE EXIST_SAL DECIMAL(10,2);
+ 	SELECT SAL INTO EXIST_SAL 
+        FROM EMP
+	WHERE EMPNO=EMP_NO
+	LIMIT 1;
+
+	IF EXIST_SAL IS  NULL  THEN
+		SET RESULT =0;
+	ELSE 
+		SET RESULT=EXIST_SAL;
+	END IF ;
+END //
+
+DELIMITER ;
+	
+mysql> SET @N=7902;
+mysql> CALL EMP_FOUND(@N,@R);
+mysql> SELECT @R;
++---------+
+| @R      |
++---------+
+| 3000.00 |
++---------+
+1 row in set (0.00 sec)
+
+ 
+//7.Write procedure 'prime' which will check if number passed to the procedure is prime. Procedure should display 1 if prime or 0 if nit prime. Use out parameter to display value out of the procedure and in parameter to pass value to the procedure.
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS IS_PRIME;
+CREATE PROCEDURE IS_PRIME(IN N INT,OUT R INT)
+BEGIN 	
+	DECLARE I INT DEFAULT 2 ;
+	DECLARE isPRIME INT DEFAULT 1;
+	IF (N<=1) THEN
+		SET isPRIME =0; 
+	ELSE
+	WHILE(I<=N/2 )
+	DO
+		IF((N %I )=0) THEN
+		SET isPRIME =0;
+		END IF;
+		SET I=I+1;
+	END WHILE;
+	END IF;
+
+	IF (isPRIME) THEN
+		SET R=1;
+	ELSE 
+		SET R=0;   
+	END IF;
+END //
+
+DELIMITER ;
+
+
+mysql> SET @N=5;
+
+mysql> CALL IS_PRIME(@N,@R);
+mysql> SELECT @R;
++------+
+| @R   |
++------+
+|    1 |
++------+
+1 row in set (0.00 sec)
+
+mysql> SET @P=8;
+mysql> CALL IS_PRIME(@P,@S);
+mysql> SELECT @S;
++------+
+| @S   |
++------+
+|    0 |
++------+
+1 row in set (0.00 sec)
+
+
+======================================Mixed Queries=======================================
+
+//1.The HR department wants to know the names of all the employees who were hired after Blake. Create a query to display the name and hire date of any employee hired after employee  Blake.
+
+SELECT ENAME,HIREDATE
+FROM EMP
+WHERE HIREDATE >(SELECT HIREDATE FROM EMP
+	         WHERE ENAME='BLAKE');
+
+
++--------+------------+
+| ENAME  | HIREDATE   |
++--------+------------+
+| MARTIN | 1981-09-28 |
+| CLARK  | 1981-06-09 |
+| SCOTT  | 1982-12-09 |
+| KING   | 1981-11-17 |
+| TURNER | 1981-09-08 |
+| ADAMS  | 1983-01-12 |
+| JAMES  | 1981-12-03 |
+| FORD   | 1981-12-03 |
+| MILLER | 1982-01-23 |
++--------+------------+
+9 rows in set (0.01 sec)
+
+//2. Write a query to get  year, and number of employees joined each year.
+
+SELECT YEAR(HIREDATE) AS JOINED_YEAR_DATE  , COUNT(*)
+FROM EMP
+GROUP BY (HIREDATE);
+
+
++------------------+----------+
+| JOINED_YEAR_DATE | COUNT(*) |
++------------------+----------+
+|             1980 |        1 |
+|             1981 |        1 |
+|             1981 |        1 |
+|             1981 |        1 |
+|             1981 |        1 |
+|             1981 |        1 |
+|             1981 |        1 |
+|             1982 |        1 |
+|             1981 |        1 |
+|             1981 |        1 |
+|             1983 |        1 |
+|             1981 |        2 |
+|             1982 |        1 |
++------------------+----------+
+13 rows in set (0.01 sec)
+
+
+===================OR=================
+
+mysql> SELECT YEAR(HIREDATE) AS JOINED_YEAR_DATE  , COUNT(*)
+    -> FROM EMP
+    -> GROUP BY YEAR(HIREDATE);
+
++------------------+----------+
+| JOINED_YEAR_DATE | COUNT(*) |
++------------------+----------+
+|             1980 |        1 |
+|             1981 |       10 |
+|             1982 |        2 |
+|             1983 |        1 |
++------------------+----------+
+4 rows in set (0.00 sec)
+
+//3.Write a query to display all employees with experience more than 43 years.
+
+SELECT ENAME, FLOOR(DATEDIFF(CURDATE(),HIREDATE)/365) AS "EXPERIENCE"
+FROM EMP
+WHERE  FLOOR(DATEDIFF(CURDATE(),HIREDATE)/365)  > 43 ;
+
++--------+------------+
+| ENAME  | EXPERIENCE |
++--------+------------+
+| SMITH  |         44 |
+| ALLEN  |         44 |
+| WARD   |         44 |
+| JONES  |         44 |
+| MARTIN |         44 |
+| BLAKE  |         44 |
+| CLARK  |         44 |
+| TURNER |         44 |
++--------+------------+
+8 rows in set (0.01 sec)
+
+//4.Display 3rd highest salary.
+
+SELECT * FROM EMP E1
+WHERE 3=(SELECT COUNT(DISTINCT SAL) 
+	FROM EMP E2
+	WHERE E2.SAL >E1.SAL);
+	
++-------+-------+---------+------+------------+---------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL     | COMM | DEPTNO |
++-------+-------+---------+------+------------+---------+------+--------+
+|  7698 | BLAKE | MANAGER | 7839 | 1981-05-01 | 2850.00 | NULL |     30 |
++-------+-------+---------+------+------------+---------+------+--------+
+1 row in set (0.03 sec)
+
+
+//5.Write a query which will display all employees working in sales department.
+
+SELECT E.ENAME,E.DEPTNO,D.DNAME FROM EMP E, DEPT D
+WHERE D.DNAME='SALES' AND E.DEPTNO=D.DEPTNO;
+
++--------+--------+-------+
+| ENAME  | DEPTNO | DNAME |
++--------+--------+-------+
+| ALLEN  |     30 | SALES |
+| WARD   |     30 | SALES |
+| MARTIN |     30 | SALES |
+| BLAKE  |     30 | SALES |
+| TURNER |     30 | SALES |
+| JAMES  |     30 | SALES |
++--------+--------+-------+
+6 rows in set (0.04 sec)
+
+
+//6.Write a query to display year if more than 2 employees are hired in that year.
+
+SELECT YEAR(HIREDATE), COUNT(YEAR(HIREDATE))
+FROM EMP
+GROUP BY YEAR(HIREDATE)
+HAVING COUNT(YEAR(HIREDATE))>2;
+
++----------------+-----------------------+
+| YEAR(HIREDATE) | COUNT(YEAR(HIREDATE)) |
++----------------+-----------------------+
+|           1981 |                    10 |
++----------------+-----------------------+
+1 row in set (0.01 sec)
+
+

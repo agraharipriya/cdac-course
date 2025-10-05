@@ -1,0 +1,16 @@
+3. Generate detailed report as follows for all courses
+cid,cname,rid,rname,rloc,fid,fname
+
+SELECT c.cid,c.cname,r.rid,r.rname,r.rloc,f.fid,f.fname
+FROM faculty f
+LEFT JOIN Courses c
+ON f.fid =c.fid
+JOIN room r ON r.rid=c.rid;
+
+
+select e1.ename,e1.deptno,e1.sal 
+from EMP e1
+where e1.deptno in (select max(e2.sal)
+from EMP e2
+where e1.sal>e2.sal);
+

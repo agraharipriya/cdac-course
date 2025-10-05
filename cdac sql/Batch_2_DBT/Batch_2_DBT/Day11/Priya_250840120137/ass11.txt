@@ -1,0 +1,629 @@
+
+//1.display all movies with rating=4
+
+db.movies.find({rating:4})
+
+Batch2> db.movies.find({rating:4})
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebeaa'),
+    name: 'Andhadhund',
+    price: 400,
+    actor: [ 'Ayushman', 'radhika' ],
+    rating: 4
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeab'),
+    name: 'Andhadhund',
+    price: null,
+    actor: [ 'Tabbu' ],
+    rating: 4
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeb0'),
+    name: 'padmavat',
+    rating: 4,
+    price: 250,
+    ticket_no: 300,
+    actor: [
+      'Deepika',
+      'shahid kapoor',
+      'ranveer singh',
+      'aditi Rao',
+      'aaaaa'
+    ],
+    cancellation: { date: { '$timestamp': { t: 1567175239, i: 1 } } }
+  }
+]
+
+=====================================================================================
+
+//2.display all movies with rating=3 and price=200.
+
+db.movies.find({rating:3,price:200})
+
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebea5'),
+    name: '3 idiots',
+    actor: [ 'Kareena Kapoor', 'amir', 'kareena', 'mahadavan', 'sharman' ],
+    rating: 3,
+    ticket_no: 150,
+    price: 200
+  }
+]
+
+===============================================================================
+
+//3.display all movies with price = 200 or 540 400
+
+db.movies.find({price:{$in:[200,400,540]}})
+
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebea4'),
+    name: 'kahani',
+    actor: [ 'aaaa', 'bbbb', 'karan', 'karri', 'vidya' ],
+    ticket_no: 420,
+    price: 200,
+    ac7tors: [ 'bbbb' ],
+    rating: 8,
+    lastmodified: { '$date': '2019-04-07T11:25:40.634Z' }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea5'),
+    name: '3 idiots',
+    actor: [ 'Kareena Kapoor', 'amir', 'kareena', 'mahadavan', 'sharman' ],
+    rating: 3,
+    ticket_no: 150,
+    price: 200
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea9'),
+    name: 'kahani 2',
+    ticket_no: 820,
+    actor: [
+      'vidya',  'Arjun',
+      'Jonny',  'nawaz',
+      'prasad', 'Shreyas',
+      'Jonny',  'yash'
+    ],
+    rating: 5,
+    price: 200
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeaa'),
+    name: 'Andhadhund',
+    price: 400,
+    actor: [ 'Ayushman', 'radhika' ],
+    rating: 4
+  }
+]
+============================================================================
+
+//4.display all movies with price not = 200 nor 540  nor 400
+
+db.movies.find({price:{$nin:[200,540,400]}})
+
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebea6'),
+    name: 'lagaan',
+    actor: [ 'amir', 'angraz' ],
+    rating: 6,
+    ticket_no: 410,
+    price: 350,
+    cancellation: {
+      date: { '$timestamp': { t: 1554356003, i: 1 } },
+      reason: 'user request'
+    },
+    lastModified: { '$date': '2019-04-04T05:33:23.022Z' }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea7'),
+    name: 'sholay',
+    actor: [
+      'Dharamendra',
+      'Amitabh',
+      'Sachin Pilgaokar',
+      'Dharamendra',
+      'Dharamendra',
+      'Mr. Khote',
+      'jaya bacchan',
+      'sanjiv kapoor'
+    ],
+    rating: 6,
+    ticket_no: 550,
+    price: 350,
+    position: [ 2, 2 ]
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea8'),
+    name: 'aradhana',
+    actor: [ 'amitabh', 'prem', 'rajesh khanna' ],
+    rating: 3,
+    ticket_no: 550,
+    price: 260
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeab'),
+    name: 'Andhadhund',
+    price: null,
+    actor: [ 'Tabbu' ],
+    rating: 4
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeac'),
+    name: 'uri',
+    rating: 5,
+    actor: [ 'vicky kaushal', 'yami', 'Paresh Rawal' ]
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebead'),
+    name: 'Dil dhadakane do',
+    rating: 3,
+    price: 340,
+    actor: "['Anil kapoor']"
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeae'),
+    name: 'Kesari',
+    actor: [ 'Akshay Kumar', 'Pariniti chopra' ],
+    rating: 6,
+    price: 350,
+    ticket_no: 270,
+    rdate: { '$date': '2019-01-23T00:00:00.000Z' }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeaf'),
+    name: 'paa',
+    actor: [ 'Amitabh', 'vidya balan', 'Abhishek' ],
+    rating: 2,
+    price: 270,
+    ticket_no: 210,
+    rdate: { '$date': '2019-01-23T00:00:00.000Z' },
+    others: { director: 'R Balki', songs: 'Amit trivedi' }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeb0'),
+    name: 'padmavat',
+    rating: 4,
+    price: 250,
+    ticket_no: 300,
+    actor: [
+      'Deepika',
+      'shahid kapoor',
+      'ranveer singh',
+      'aditi Rao',
+      'aaaaa'
+    ],
+    cancellation: { date: { '$timestamp': { t: 1567175239, i: 1 } } }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeb1'),
+    name: 'newton',
+    ticket_no: 690,
+    actor: [ 'Rajkumar Rao', 'Pankaj Tripathi' ],
+    price: 310,
+    lastmodified: { '$date': '2019-09-28T14:47:49.204Z' }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeb2'),
+    name: 'mission mangal',
+    price: 350,
+    actor: [ 'Sonakshi', 'Vidya Balan' ],
+    rating: 6
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeb3'),
+    name: 'chichore',
+    price: 274,
+    rating: 4.3,
+    actor: [ 'sushant', 'shradha kapoor', 'zzz', 'harshal' ]
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeb4'),
+    name: 'dream girl',
+    actor: [ 'ayushman', 'nushrat bharucha' ],
+    price: 250,
+    rating: null
+  },
+  { _id: ObjectId('68d2561e84575c4854cebeb5'), price: 280 }
+]
+
+
+===============================================================
+//5.display all movies with rating=4 or price>300
+
+db.movies.find({$or:[{rating:3},{price:{$gt:300}}]})
+
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebea5'),
+    name: '3 idiots',
+    actor: [ 'Kareena Kapoor', 'amir', 'kareena', 'mahadavan', 'sharman' ],
+    rating: 3,
+    ticket_no: 150,
+    price: 200
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea6'),
+    name: 'lagaan',
+    actor: [ 'amir', 'angraz' ],
+    rating: 6,
+    ticket_no: 410,
+    price: 350,
+    cancellation: {
+      date: { '$timestamp': { t: 1554356003, i: 1 } },
+      reason: 'user request'
+    },
+    lastModified: { '$date': '2019-04-04T05:33:23.022Z' }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea7'),
+    name: 'sholay',
+    actor: [
+      'Dharamendra',
+      'Amitabh',
+      'Sachin Pilgaokar',
+      'Dharamendra',
+      'Dharamendra',
+      'Mr. Khote',
+      'jaya bacchan',
+      'sanjiv kapoor'
+    ],
+    rating: 6,
+    ticket_no: 550,
+    price: 350,
+    position: [ 2, 2 ]
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea8'),
+    name: 'aradhana',
+    actor: [ 'amitabh', 'prem', 'rajesh khanna' ],
+    rating: 3,
+    ticket_no: 550,
+    price: 260
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeaa'),
+    name: 'Andhadhund',
+    price: 400,
+    actor: [ 'Ayushman', 'radhika' ],
+    rating: 4
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebead'),
+    name: 'Dil dhadakane do',
+    rating: 3,
+    price: 340,
+    actor: "['Anil kapoor']"
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeae'),
+    name: 'Kesari',
+    actor: [ 'Akshay Kumar', 'Pariniti chopra' ],
+    rating: 6,
+    price: 350,
+    ticket_no: 270,
+    rdate: { '$date': '2019-01-23T00:00:00.000Z' }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeb1'),
+    name: 'newton',
+    ticket_no: 690,
+    actor: [ 'Rajkumar Rao', 'Pankaj Tripathi' ],
+    price: 310,
+    lastmodified: { '$date': '2019-09-28T14:47:49.204Z' }
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeb2'),
+    name: 'mission mangal',
+    price: 350,
+    actor: [ 'Sonakshi', 'Vidya Balan' ],
+    rating: 6
+  }
+]
+
+
+=================================================================
+//6.display all movies with rating is odd
+
+db.movies.find({rating:{$mod:[2,1]}})
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebea5'),
+    name: '3 idiots',
+    actor: [ 'Kareena Kapoor', 'amir', 'kareena', 'mahadavan', 'sharman' ],
+    rating: 3,
+    ticket_no: 150,
+    price: 200
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea8'),
+    name: 'aradhana',
+    actor: [ 'amitabh', 'prem', 'rajesh khanna' ],
+    rating: 3,
+    ticket_no: 550,
+    price: 260
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebea9'),
+    name: 'kahani 2',
+    ticket_no: 820,
+    actor: [
+      'vidya',  'Arjun',
+      'Jonny',  'nawaz',
+      'prasad', 'Shreyas',
+      'Jonny',  'yash'
+    ],
+    rating: 5,
+    price: 200
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeac'),
+    name: 'uri',
+    rating: 5,
+    actor: [ 'vicky kaushal', 'yami', 'Paresh Rawal' ]
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebead'),
+    name: 'Dil dhadakane do',
+    rating: 3,
+    price: 340,
+    actor: "['Anil kapoor']"
+  }
+]
+
+=================================================================================
+//7.display all movies in which amitabh has acted
+
+db.movies.find({actor:'Amitabh'})
+
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebea7'),
+    name: 'sholay',
+    actor: [
+      'Dharamendra',
+      'Amitabh',
+      'Sachin Pilgaokar',
+      'Dharamendra',
+      'Dharamendra',
+      'Mr. Khote',
+      'jaya bacchan',
+      'sanjiv kapoor'
+    ],
+    rating: 6,
+    ticket_no: 550,
+    price: 350,
+    position: [ 2, 2 ]
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeaf'),
+    name: 'paa',
+    actor: [ 'Amitabh', 'vidya balan', 'Abhishek' ],
+    rating: 2,
+    price: 270,
+    ticket_no: 210,
+    rdate: { '$date': '2019-01-23T00:00:00.000Z' },
+    others: { director: 'R Balki', songs: 'Amit trivedi' }
+  }
+]
+
+=========================================================================================
+//8.display all movies in which amitabh has acted display in ascending order of price
+
+db.movies.find({actor:'Amitabh'}).sort({price:-1})
+
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebea7'),
+    name: 'sholay',
+    actor: [
+      'Dharamendra',
+      'Amitabh',
+      'Sachin Pilgaokar',
+      'Dharamendra',
+      'Dharamendra',
+      'Mr. Khote',
+      'jaya bacchan',
+      'sanjiv kapoor'
+    ],
+    rating: 6,
+    ticket_no: 550,
+    price: 350,
+    position: [ 2, 2 ]
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeaf'),
+    name: 'paa',
+    actor: [ 'Amitabh', 'vidya balan', 'Abhishek' ],
+    rating: 2,
+    price: 270,
+    ticket_no: 210,
+    rdate: { '$date': '2019-01-23T00:00:00.000Z' },
+    others: { director: 'R Balki', songs: 'Amit trivedi' }
+  }
+]
+
+==========================================================
+//9.display all movies in which amitabh has acted display in descending order of rating
+
+db.movies.find({actor:'Amitabh'}).sort({rating:-1})
+
+[
+  {
+    _id: ObjectId('68d2561e84575c4854cebea7'),
+    name: 'sholay',
+    actor: [
+      'Dharamendra',
+      'Amitabh',
+      'Sachin Pilgaokar',
+      'Dharamendra',
+      'Dharamendra',
+      'Mr. Khote',
+      'jaya bacchan',
+      'sanjiv kapoor'
+    ],
+    rating: 6,
+    ticket_no: 550,
+    price: 350,
+    position: [ 2, 2 ]
+  },
+  {
+    _id: ObjectId('68d2561e84575c4854cebeaf'),
+    name: 'paa',
+    actor: [ 'Amitabh', 'vidya balan', 'Abhishek' ],
+    rating: 2,
+    price: 270,
+    ticket_no: 210,
+    rdate: { '$date': '2019-01-23T00:00:00.000Z' },
+    others: { director: 'R Balki', songs: 'Amit trivedi' }
+  }
+]
+
+=======================================================================
+
+//10.display top 4 rated movies
+
+db.movies.find({},{name:1,rating:1,_id:0}).sort({rating:-1}).limit(4)
+
+[
+  { name: 'kahani', rating: 8 },
+  { name: 'Kesari', rating: 6 },
+  { name: 'sholay', rating: 6 },
+  { name: 'lagaan', rating: 6 }
+]
+=======================================================================================
+//11.Display  lowest 3 rating movies
+
+db.movies.find({},{name:1,rating:1,_id:0}).sort({rating:1}).limit(3)
+
+[ {}, { name: 'dream girl', rating: null }, { name: 'newton' } ]
+
+=============================================================================================
+//12.Create new collection emp.
+Use insertOne to add 1 document in the collection. Document should contain empno,ename,deptno,sal 
+
+db.emp.insertOne({empno:1,ename:'priya',deptno:10,sal:90000})
+{
+  acknowledged: true,
+  insertedId: ObjectId('68d25d9184575c4854cebeb6')
+}
+
+Batch2> db.emp.find();
+[
+  {
+    _id: ObjectId('68d25e5b84575c4854cebeb7'),
+    empno: 1,
+    ename: 'priya',
+    deptno: 10,
+    sal: 90000
+  }
+]
+
+=====================================================================================================
+//13.Using insertMany add 5 documents in the collection
+db.emp.insertMany([{empno:2,ename:'Rishita',deptno:20,sal:100000},{empno:3,ename:'satyam',deptno:10,sal:120000},{empno:4,ename:'vibhuti',deptno:30,sal:8000},{empno:5,ename:'Ritika',deptno:20,sal:80000},{empno:6,ename:'sunil',deptno:50,sal:100}])
+
+
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('68d25ff784575c4854cebeb8'),
+    '1': ObjectId('68d25ff784575c4854cebeb9'),
+    '2': ObjectId('68d25ff784575c4854cebeba'),
+    '3': ObjectId('68d25ff784575c4854cebebb'),
+    '4': ObjectId('68d25ff784575c4854cebebc')
+  }
+}
+
+=============================================================================
+
+//14.Try inserting below documents
+insertMany({empno:your choice,ename:your_choice,deptno:nul},{ empno:your choice,ename:your_choice,deptno :null})
+
+db.emp.insertMany([{empno:7,ename:'suhail',deptno:50},
+{ empno:8,ename:'mukul',deptno :null}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('68d2608584575c4854cebebd'),
+    '1': ObjectId('68d2608584575c4854cebebe')
+  }
+}
+
+Batch2> db.emp.find({})
+[
+  {
+    _id: ObjectId('68d25e5b84575c4854cebeb7'),
+    empno: 1,
+    ename: 'priya',
+    deptno: 10,
+    sal: 90000
+  },
+  {
+    _id: ObjectId('68d25ff784575c4854cebeb8'),
+    empno: 2,
+    ename: 'Rishita',
+    deptno: 20,
+    sal: 100000
+  },
+  {
+    _id: ObjectId('68d25ff784575c4854cebeb9'),
+    empno: 3,
+    ename: 'satyam',
+    deptno: 10,
+    sal: 120000
+  },
+  {
+    _id: ObjectId('68d25ff784575c4854cebeba'),
+    empno: 4,
+    ename: 'vibhuti',
+    deptno: 30,
+    sal: 8000
+  },
+  {
+    _id: ObjectId('68d25ff784575c4854cebebb'),
+    empno: 5,
+    ename: 'Ritika',
+    deptno: 20,
+    sal: 80000
+  },
+  {
+    _id: ObjectId('68d25ff784575c4854cebebc'),
+    empno: 6,
+    ename: 'sunil',
+    deptno: 50,
+    sal: 100
+  },
+  {
+    _id: ObjectId('68d2608584575c4854cebebd'),
+    empno: 7,
+    ename: 'suhail',
+    deptno: 50
+  },
+  {
+    _id: ObjectId('68d2608584575c4854cebebe'),
+    empno: 8,
+    ename: 'mukul',
+    deptno: null
+  }
+]
+
+=======================================================================================================
+//15.Execute below query and see the result
+ Find({deptno:null})
+
+ db.emp.find({deptno:null})
+
+[
+  {
+    _id: ObjectId('68d2608584575c4854cebebe'),
+    empno: 8,
+    ename: 'mukul',
+    deptno: null
+  }
+]
+

@@ -1,0 +1,951 @@
+
+
+//1.Write a function to calculate total salary of an employee. Call the function in the select clause.
+ total sal=sal+comm
+	 SET GLOBAL LOG_BIN_TRUST_FUNCTION_CREATORS=1;
+	 DELIMITER //
+	 DROP FUNCTION IF EXISTS CALCULATE;
+	 CREATE FUNCTION CALCULATE(X DECIMAL(7,2),Y DECIMAL(7,2)) RETURNS DECIMAL(7,2)
+	 BEGIN
+	 		DECLARE P DECIMAL(7,2);
+	 		SET P=X+IFNULL(Y,0);
+	 		RETURN P;
+	 END //
+	 DELIMITER ;		 
+	 
+	 SELECT ENAME,SAL,COMM,
+	 CALCULATE(SAL,COMM) AS "TOTAL SALARY"
+	 FROM EMP;
+	 
++---------+--------+------+--------------+
+| ENAME   | SAL    | COMM | TOTAL SALARY |
++---------+--------+------+--------------+
+| SMITH   |    880 | NULL |       880.00 |
+| ALLEN   |   1760 |  300 |      2060.00 |
+| WARD    |   1375 |  500 |      1875.00 |
+| JONES   | 3272.5 | NULL |      3272.50 |
+| MARTIN  |   1375 | 1400 |      2775.00 |
+| BLAKE   |   3135 | NULL |      3135.00 |
+| CLARK   |   2695 | NULL |      2695.00 |
+| SCOTT   |   3300 | NULL |      3300.00 |
+| KING    |   5500 | NULL |      5500.00 |
+| TURNER  |   1650 |    0 |      1650.00 |
+| ADAMS   |   1210 | NULL |      1210.00 |
+| JAMES   |   1045 | NULL |      1045.00 |
+| FORD    |   3300 | NULL |      3300.00 |
+| MILLER  |   1430 | NULL |      1430.00 |
+| Priya   |   3450 |  400 |      3850.00 |
+| Rishita |   3400 |  230 |      3630.00 |
+| Geeta   |  10000 |  300 |     10300.00 |
+| Raj     |   NULL | NULL |         NULL |
++---------+--------+------+--------------+
+18 rows in set (0.001 sec)
+
+ 
+//2.Write a function to generate an email. Call the function in select clause.
+email is generated as follows
+​​​​​first 2 letters of name + last 2 letters of job @knowit.com. 
+
+SET GLOBAL LOG_BIN_TRUST_FUNCTION_CREATORS=1;
+	 DELIMITER //
+	 DROP FUNCTION IF EXISTS EMAIL;
+ 	 CREATE FUNCTION EMAIL(x varchar(15),y varchar(15)) RETURNS VARCHAR(15)
+ 	 BEGIN
+ 	 			DECLARE EMAIL_P VARCHAR(20);
+				SET EMAIL_P=CONCAT(SUBSTR(X,1,2),SUBSTR(y,-2,2),'@KNOWIT.COM');
+				RETURN EMAIL_P;
+	END //
+	DELIMITER ;			
+				
+				
+SELECT ENAME, JOB ,EMAIL(ENAME,JOB) AS "EMAIL"
+FROM EMP;	
+
++---------+-----------+-----------------+
+| ENAME   | JOB       | EMAIL           |
++---------+-----------+-----------------+
+| SMITH   | CLERK     | SMRK@KNOWIT.COM |
+| ALLEN   | SALESMAN  | ALAN@KNOWIT.COM |
+| WARD    | SALESMAN  | WAAN@KNOWIT.COM |
+| JONES   | MANAGER   | JOER@KNOWIT.COM |
+| MARTIN  | SALESMAN  | MAAN@KNOWIT.COM |
+| BLAKE   | MANAGER   | BLER@KNOWIT.COM |
+| CLARK   | MANAGER   | CLER@KNOWIT.COM |
+| SCOTT   | ANALYST   | SCST@KNOWIT.COM |
+| KING    | PRESIDENT | KINT@KNOWIT.COM |
+| TURNER  | SALESMAN  | TUAN@KNOWIT.COM |
+| ADAMS   | CLERK     | ADRK@KNOWIT.COM |
+| JAMES   | CLERK     | JARK@KNOWIT.COM |
+| FORD    | ANALYST   | FOST@KNOWIT.COM |
+| MILLER  | CLERK     | MIRK@KNOWIT.COM |
+| Priya   | manager   | Prer@KNOWIT.COM |
+| Rishita | analyst   | Rist@KNOWIT.COM |
+| Geeta   | NULL      | NULL            |
+| Raj     | Analyst   | Rast@KNOWIT.COM |
++---------+-----------+-----------------+
+18 rows in set (0.001 sec)
+
+
+					
+//3.Write a procedure which accepts job as a 'in' parameter  .Write a function cal_sal() which calculates maximum salary for the job. Function should return maximum salary to the procedure. Print max sal out of the procedure.
+
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS CAL_SAL1;
+CREATE PROCEDURE CAL_SAL1(IN  J VARCHAR(15),OUT P_MAX DECIMAL(7,2))
+BEGIN
+	SET P_MAX=CAL_SAL(J);
+	
+END //
+DELIMITER ;	
+
+SET GLOBAL LOG_BIN_TRUST_FUNCTION_CREATORS=1;
+DELIMITER //
+DROP FUNCTION IF EXISTS CAL_SAL;
+CREATE FUNCTION CAL_SAL(X VARCHAR(15)) RETURNS DECIMAL(7,2)
+BEGIN
+	 DECLARE M DECIMAL(7,2);
+	 SELECT MAX(SAL) INTO M FROM EMP WHERE JOB=X AND SAL IS NOT NULL;
+	 RETURN M;
+END //
+DELIMITER ;
+
+SET @J='CLERK';
+CALL CAL_SAL1(@J,@M);
+SELECT @M;
+
++---------+
+| @M      |
++---------+
+| 1430.00 |
++---------+
+1 row in set (0.000 sec)
+
+
+
+//4.Write a cursor which will list all rows having deptno 20;
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS CURSOR_CHK;
+CREATE PROCEDURE CURSOR_CHK()
+BEGIN
+		DECLARE A INT ;	
+		DECLARE B VARCHAR(15);	
+		DECLARE C INT;
+		DECLARE F INT DEFAULT 0;
+	
+		DECLARE CURSOR1 CURSOR FOR
+		SELECT EMPNO,ENAME,DEPTNO 
+		FROM EMP
+		WHERE DEPTNO=20;
+		
+		DECLARE CONTINUE HANDLER FOR
+		NOT FOUND SET F=1;
+		OPEN CURSOR1;
+		DISPLAY : LOOP
+			FETCH CURSOR1 INTO A,B,C;
+			IF F=1
+			THEN 
+				LEAVE DISPLAY;
+			END IF;
+			SELECT A,B,C;
+		END LOOP;
+		CLOSE CURSOR1;
+		
+END //
+
+DELIMITER ;
+
+CALL CURSOR_CHK;		
+
++------+-------+------+
+| A    | B     | C    |
++------+-------+------+
+| 7369 | SMITH |   20 |
++------+-------+------+
+1 row in set (0.000 sec)
+
++------+-------+------+
+| A    | B     | C    |
++------+-------+------+
+| 7566 | JONES |   20 |
++------+-------+------+
+1 row in set (0.001 sec)
+
++------+-------+------+
+| A    | B     | C    |
++------+-------+------+
+| 7788 | SCOTT |   20 |
++------+-------+------+
+1 row in set (0.001 sec)
+
++------+-------+------+
+| A    | B     | C    |
++------+-------+------+
+| 7876 | ADAMS |   20 |
++------+-------+------+
+1 row in set (0.001 sec)
+
++------+------+------+
+| A    | B    | C    |
++------+------+------+
+| 7902 | FORD |   20 |
++------+------+------+
+1 row in set (0.001 sec)
+
++------+-------+------+
+| A    | B     | C    |
++------+-------+------+
+| 1111 | Geeta |   20 |
++------+-------+------+
+1 row in set (0.001 sec)
+
+Query OK, 0 rows affected (0.001 sec)
+		
+
+
+//5.Write a cursor to increment salary as follows
+     Clerk 10 % rise
+     Manager 5% rise
+     Analyst 7% rise.
+    No rise given for other jobs. 
+
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS INC_SAL_CHK;
+CREATE PROCEDURE INC_SAL_CHK()
+BEGIN
+	DECLARE A VARCHAR(15);
+	DECLARE B DECIMAL(7,2);
+	DECLARE C VARCHAR(15);
+	DECLARE F INT DEFAULT 0;
+	
+	DECLARE CURSOR2 CURSOR FOR
+	SELECT ENAME, SAL,JOB FROM EMP;
+	
+	DECLARE CONTINUE HANDLER FOR
+	NOT FOUND SET F =1;
+	OPEN CURSOR2;
+	
+	PRINT:LOOP
+	FETCH CURSOR2 INTO A,B,C;
+	IF F=1
+	THEN 
+		LEAVE PRINT;
+	END IF;
+	IF C ='CLERK' 
+	THEN 
+		SET B=B+0.1 *B;
+	END IF;
+	 IF C='MANAGER'
+	 THEN 
+		SET B=B+0.05*B;
+	 END IF;	
+	 IF C='ANALYST'
+	 THEN 
+		SET B=B+0.07*B;	
+	 END IF;
+	
+	SELECT A,B,C;
+	END LOOP;
+	CLOSE CURSOR2;
+	
+END //
+DELIMITER ;	
+	
+			
+CALL INC_SAL_CHK;	
+
++-------+--------+-------+
+| A     | B      | C     |
++-------+--------+-------+
+| SMITH | 968.00 | CLERK |
++-------+--------+-------+
+1 row in set (0.001 sec)
+
++-------+---------+----------+
+| A     | B       | C        |
++-------+---------+----------+
+| ALLEN | 1760.00 | SALESMAN |
++-------+---------+----------+
+1 row in set (0.001 sec)
+
++------+---------+----------+
+| A    | B       | C        |
++------+---------+----------+
+| WARD | 1375.00 | SALESMAN |
++------+---------+----------+
+1 row in set (0.001 sec)
+
++-------+---------+---------+
+| A     | B       | C       |
++-------+---------+---------+
+| JONES | 3436.13 | MANAGER |
++-------+---------+---------+
+1 row in set (0.001 sec)
+
++--------+---------+----------+
+| A      | B       | C        |
++--------+---------+----------+
+| MARTIN | 1375.00 | SALESMAN |
++--------+---------+----------+
+1 row in set (0.001 sec)
+
++-------+---------+---------+
+| A     | B       | C       |
++-------+---------+---------+
+| BLAKE | 3291.75 | MANAGER |
++-------+---------+---------+
+1 row in set (0.001 sec)
+
++-------+---------+---------+
+| A     | B       | C       |
++-------+---------+---------+
+| CLARK | 2829.75 | MANAGER |
++-------+---------+---------+
+1 row in set (0.001 sec)
+
++-------+---------+---------+
+| A     | B       | C       |
++-------+---------+---------+
+| SCOTT | 3531.00 | ANALYST |
++-------+---------+---------+
+1 row in set (0.001 sec)
+
++------+---------+-----------+
+| A    | B       | C         |
++------+---------+-----------+
+| KING | 5500.00 | PRESIDENT |
++------+---------+-----------+
+1 row in set (0.001 sec)
+
++--------+---------+----------+
+| A      | B       | C        |
++--------+---------+----------+
+| TURNER | 1650.00 | SALESMAN |
++--------+---------+----------+
+1 row in set (0.001 sec)
+
++-------+---------+-------+
+| A     | B       | C     |
++-------+---------+-------+
+| ADAMS | 1331.00 | CLERK |
++-------+---------+-------+
+1 row in set (0.001 sec)
+
++-------+---------+-------+
+| A     | B       | C     |
++-------+---------+-------+
+| JAMES | 1149.50 | CLERK |
++-------+---------+-------+
+1 row in set (0.001 sec)
+
++------+---------+---------+
+| A    | B       | C       |
++------+---------+---------+
+| FORD | 3531.00 | ANALYST |
++------+---------+---------+
+1 row in set (0.001 sec)
+
++--------+---------+-------+
+| A      | B       | C     |
++--------+---------+-------+
+| MILLER | 1573.00 | CLERK |
++--------+---------+-------+
+1 row in set (0.001 sec)
+
++-------+---------+---------+
+| A     | B       | C       |
++-------+---------+---------+
+| Priya | 3622.50 | manager |
++-------+---------+---------+
+1 row in set (0.001 sec)
+
++---------+---------+---------+
+| A       | B       | C       |
++---------+---------+---------+
+| Rishita | 3638.00 | analyst |
++---------+---------+---------+
+1 row in set (0.001 sec)
+
++-------+----------+------+
+| A     | B        | C    |
++-------+----------+------+
+| Geeta | 10000.00 | NULL |
++-------+----------+------+
+1 row in set (0.001 sec)
+
++------+------+---------+
+| A    | B    | C       |
++------+------+---------+
+| Raj  | NULL | Analyst |
++------+------+---------+
+1 row in set (0.001 sec)
+
+Query OK, 0 rows affected (0.001 sec)
+		
+    
+//6.Pass job as a parameter to procedure and display all employees working
+​​​​​​​for the specified job using cursor.
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS JOB_CHK;
+CREATE PROCEDURE JOB_CHK(IN J INT)
+BEGIN
+	DECLARE A VARCHAR(15);
+	DECLARE F INT DEFAULT 0;
+	DECLARE J1 INT;
+	DECLARE B VARCHAR(15);
+	DECLARE CURSOR3 CURSOR FOR
+	SELECT ENAME,DEPTNO, JOB
+	FROM EMP ;
+	
+	
+	DECLARE CONTINUE HANDLER FOR
+	NOT FOUND SET F=1;
+	
+	OPEN CURSOR3;
+	PRINT :LOOP
+	FETCH CURSOR3 INTO A,J1,B;
+	IF F=1
+	THEN 
+		LEAVE PRINT;
+	END IF;
+	IF J1=J
+	THEN 
+	SELECT A,J1,B;
+	END IF;
+	END LOOP;
+	
+	END //
+	DELIMITER ;
+	
+SET @J=10;
+CALL JOB_CHK(@J);
+
++-------+------+---------+
+| A     | J1   | B       |
++-------+------+---------+
+| CLARK |   10 | MANAGER |
++-------+------+---------+
+1 row in set (0.000 sec)
+
++------+------+-----------+
+| A    | J1   | B         |
++------+------+-----------+
+| KING |   10 | PRESIDENT |
++------+------+-----------+
+1 row in set (0.000 sec)
+
++--------+------+-------+
+| A      | J1   | B     |
++--------+------+-------+
+| MILLER |   10 | CLERK |
++--------+------+-------+
+1 row in set (0.001 sec)
+
+Query OK, 0 rows affected (0.001 sec)
+
+
+
+
+//7.Copy table emp as emp_new
+Add new column ‘award’ in emp_new.
+Write a cursor which will update award column as ‘YES’ if employee has experience > 42 years
+And ‘NO’ if employee has experience <=42 years . Use cursor.
+
+
+CREATE TABLE EMP_NEW 
+AS 
+SELECT * FROM EMP;
+ALTER TABLE EMP_NEW
+ADD AWARD VARCHAR(10);
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS AWARD_CHK;
+
+CREATE PROCEDURE AWARD_CHK()
+BEGIN
+    DECLARE v_empno INT;
+    DECLARE v_hiredate DATE;
+    DECLARE F INT DEFAULT 0;
+
+   
+    DECLARE cur_emp CURSOR FOR 
+        SELECT empno, hiredate FROM EMP_NEW ;
+
+  
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET F = 1;
+
+    OPEN cur_emp;
+
+    PRINT: LOOP
+        FETCH cur_emp INTO v_empno, v_hiredate;
+
+        IF F THEN
+            LEAVE PRINT;
+        END IF;
+
+
+        IF TIMESTAMPDIFF(YEAR, v_hiredate, CURDATE()) > 42 THEN
+            UPDATE EMP_NEW 
+            SET award = 'YES'
+            WHERE empno = v_empno;
+        ELSE
+            UPDATE EMP_NEW 
+            SET award = 'NO'
+            WHERE empno = v_empno;
+        END IF;
+        
+    END LOOP;
+
+    CLOSE cur_emp;
+END //
+
+DELIMITER ;
+
+CALL AWARD_CHK;
+
+SELECT * FROM EMP_NEW;
++-------+---------+-----------+------+------------+--------+------+--------+-------+
+| EMPNO | ENAME   | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO | AWARD |
++-------+---------+-----------+------+------------+--------+------+--------+-------+
+|  7369 | SMITH   | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 | YES   |
+|  7499 | ALLEN   | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 | YES   |
+|  7521 | WARD    | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 | YES   |
+|  7566 | JONES   | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 | YES   |
+|  7654 | MARTIN  | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 | YES   |
+|  7698 | BLAKE   | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 | YES   |
+|  7782 | CLARK   | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 | YES   |
+|  7788 | SCOTT   | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 | NO    |
+|  7839 | KING    | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 | YES   |
+|  7844 | TURNER  | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 | YES   |
+|  7876 | ADAMS   | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 | NO    |
+|  7900 | JAMES   | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 | YES   |
+|  7902 | FORD    | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 | YES   |
+|  7934 | MILLER  | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 | YES   |
+|  7791 | Priya   | manager   | 7798 | 1981-02-20 |   3450 |  400 |     80 | YES   |
+|  7799 | Rishita | analyst   | 7790 | 1981-02-20 |   3400 |  230 |   NULL | YES   |
+|  1111 | Geeta   | NULL      | NULL | NULL       |  10000 |  300 |     20 | NO    |
+|  2222 | Raj     | Analyst   | NULL | NULL       |   NULL | NULL |     40 | NO    |
++-------+---------+-----------+------+------------+--------+------+--------+-------+
+18 rows in set (0.000 sec)
+
+8.Consider following tables
+    product(pid,pname,price,qty)
+    product_details(pid,amt)
+    amt =price * qty
+Write a trigger which will calculate amt every time any update is done in the price of an item. 
+
+CREATE TABLE PRODUCT4(
+PID INT PRIMARY KEY AUTO_INCREMENT,
+PNAME VARCHAR(15),
+PRICE FLOAT(7,2),
+QTY INT 
+);
+
+INSERT INTO PRODUCT4(PNAME,PRICE,QTY) 
+VALUES ('PEN',120,10),
+('ERASER',80,15);
+
+ select * from PRODUCT4;
++-----+--------+--------+------+
+| PID | PNAME  | PRICE  | QTY  |
++-----+--------+--------+------+
+|   1 | PEN    | 120.00 |   10 |
+|   2 | ERASER |  80.00 |   15 |
++-----+--------+--------+------+
+2 rows in set (0.000 sec)
+
+
+CREATE TABLE PRODUCT_DETAILS(
+PID INT,
+ORDER_DATE DATE,
+AMT FLOAT (8,2),
+OLD_PRICE FLOAT(7,2),
+NEW_PRICE FLOAT(7,2)
+);
+DELIMITER //
+DROP TRIGGER IF EXISTS AFTER_UPDATE_DATA;
+CREATE TRIGGER AFTER_UPDATE_DATA
+AFTER UPDATE
+ON PRODUCT4
+FOR EACH ROW
+BEGIN
+	
+	  INSERT INTO PRODUCT_DETAILS (PID, ORDER_DATE, AMT, OLD_PRICE, NEW_PRICE)
+        VALUES (
+            OLD.PID,
+            CURDATE(),
+            (NEW.PRICE * NEW.QTY) ,
+            OLD.PRICE,
+            NEW.PRICE
+        );
+
+END //
+DELIMITER ;	
+
+UPDATE PRODUCT4
+SET PRICE = 150.00
+WHERE PID = 1;
+
+SELECT * FROM PRODUCT4;
++-----+--------+--------+------+
+| PID | PNAME  | PRICE  | QTY  |
++-----+--------+--------+------+
+|   1 | PEN    | 150.00 |   10 |
+|   2 | ERASER |  80.00 |   15 |
++-----+--------+--------+------+
+2 rows in set (0.000 sec)
+
+ SELECT * FROM PRODUCT_DETAILS;
++------+------------+---------+-----------+-----------+
+| PID  | ORDER_DATE | AMT     | OLD_PRICE | NEW_PRICE |
++------+------------+---------+-----------+-----------+
+|    1 | 2025-09-23 | 1500.00 |    120.00 |    150.00 |
++------+------------+---------+-----------+-----------+
+1 row in set (0.000 sec)
+
+
+9.Consider following table
+   emp_wage (eno, ename ,sal,over_time)
+   eno : pk auto inc
+Write a trigger which will insert over_time as 400 if value over_time entered is null.    
+
+CREATE TABLE EMP_WAGE (
+ENO INT PRIMARY KEY AUTO_INCREMENT,
+ENAME VARCHAR(15),
+SAL DECIMAL(7,2),
+OVER_TIME INT
+);
+/////
+INSERT INTO EMP_WAGE(ENAME,SAL,OVER_TIME)
+VALUES('PRIYA',50000,400),('RISHITA',60000,300),('SATYAM',40000,400);
+SELECT * FROM EMP_WAGE;
+
++-----+---------+----------+-----------+
+| ENO | ENAME   | SAL      | OVER_TIME |
++-----+---------+----------+-----------+
+|   1 | PRIYA   | 50000.00 |       400 |
+|   2 | RISHITA | 60000.00 |       300 |
+|   3 | SATYAM  | 40000.00 |       400 |
++-----+---------+----------+-----------+
+3 rows in set (0.000 sec)
+//////
+
+DELIMITER //
+
+CREATE TRIGGER BEFORE_INSERT_EMP_WAGE
+BEFORE INSERT ON EMP_WAGE
+FOR EACH ROW
+BEGIN
+    IF NEW.OVER_TIME IS NULL THEN
+        SET NEW.OVER_TIME = 400;
+    END IF;
+END //
+
+DELIMITER ;
+
+MariaDB [Automobile]> INSERT INTO EMP_WAGE(ENAME,SAL,OVER_TIME)
+    -> VALUES('SUNIL',0,NULL);
+Query OK, 1 row affected (0.024 sec)
+
+MariaDB [Automobile]> SELECT * FROM EMP_WAGE;
++-----+---------+----------+-----------+
+| ENO | ENAME   | SAL      | OVER_TIME |
++-----+---------+----------+-----------+
+|   1 | PRIYA   | 50000.00 |       400 |
+|   2 | RISHITA | 60000.00 |       300 |
+|   3 | SATYAM  | 40000.00 |       400 |
+|   4 | SUNIL   |     0.00 |       400 |
++-----+---------+----------+-----------+
+4 rows in set (0.000 sec)
+
+
+//10.Consider following table
+      order_master(oid,pname,qty,price)
+      oid : pk auto inc
+      order_log(oid,odate,amt)
+Write a trigger which will create a log of all orders once order is placed.
+
+
+CREATE TABLE order_master(
+    oid INT PRIMARY KEY AUTO_INCREMENT,
+    pname VARCHAR(15),
+    qty INT,
+    price FLOAT(7,2)
+);
+
+
+CREATE TABLE order_log(
+    oid INT,
+    odate DATE,
+    amt FLOAT(8,2)
+);
+
+
+DELIMITER //
+
+DROP TRIGGER IF EXISTS AFTER_INSERT_ORDER;
+CREATE TRIGGER AFTER_INSERT_ORDER
+AFTER INSERT ON order_master
+FOR EACH ROW
+BEGIN
+
+    INSERT INTO order_log (oid, odate, amt)
+    VALUES (NEW.oid, CURDATE(), (NEW.qty * NEW.price));
+END //
+
+DELIMITER ;
+
+
+INSERT INTO order_master (pname, qty, price)
+VALUES ('Laptop', 2, 80000.00);
+
+
+SELECT * FROM order_master;
+
++-----+--------+------+----------+
+| oid | pname  | qty  | price    |
++-----+--------+------+----------+
+|   1 | Laptop |    2 | 80000.00 |
++-----+--------+------+----------+
+1 row in set (0.000 sec)
+
+SELECT * FROM order_log;
+
++------+------------+-----------+
+| oid  | odate      | amt       |
++------+------------+-----------+
+|    1 | 2025-09-23 | 160000.00 |
++------+------------+-----------+
+1 row in set (0.000 sec)
+
+
+//11.Consider following table
+      cust_master(cid,cname,accno,city)
+     cust_details(cid,deleted_date)
+Write a trigger which will save the information of deleted customer in cust_details table. 
+
+CREATE TABLE cust_master(
+    cid INT PRIMARY KEY,
+    cname VARCHAR(50),
+    accno VARCHAR(20),
+    city VARCHAR(30)
+);
+
+CREATE TABLE cust_details(
+    cid INT,
+    deleted_date DATE
+);
+
+DELIMITER //
+
+DROP TRIGGER IF EXISTS AFTER_DELETE_CUSTOMER;
+CREATE TRIGGER AFTER_DELETE_CUSTOMER
+AFTER DELETE ON cust_master
+FOR EACH ROW
+BEGIN
+    INSERT INTO cust_details (cid, deleted_date)
+    VALUES (OLD.cid, CURDATE());
+END //
+
+DELIMITER ;
+
+INSERT INTO cust_master (cid, cname, accno, city) VALUES (1, 'John Doe', '12345', 'Pune');
+INSERT INTO cust_master (cid, cname, accno, city) VALUES (2, 'Jane Smith', '67890', 'Mumbai');
+
++-----+------------+-------+--------+
+| cid | cname      | accno | city   |
++-----+------------+-------+--------+
+|   1 | John Doe   | 12345 | Pune   |
+|   2 | Jane Smith | 67890 | Mumbai |
++-----+------------+-------+--------+
+2 rows in set (0.000 sec)
+
+
+DELETE FROM cust_master WHERE cid = 1;
+
+SELECT * FROM cust_master;
+SELECT * FROM cust_details;
+
++-----+------------+-------+--------+
+| cid | cname      | accno | city   |
++-----+------------+-------+--------+
+|   2 | Jane Smith | 67890 | Mumbai |
++-----+------------+-------+--------+
+1 row in set (0.000 sec)
+
++------+--------------+
+| cid  | deleted_date |
++------+--------------+
+|    1 | 2025-09-23   |
++------+--------------+
+1 row in set (0.000 sec)
+
+
+
+//12.Send any number to the procedure. Pass this number to the function. Function should return 1 if the number is prime or 0 if the number is not prime. Return value to the procedure. And display 1 or 0.
+
+DELIMITER //
+
+DROP FUNCTION IF EXISTS IS_PRIME_NUMBER;
+CREATE FUNCTION IS_PRIME_NUMBER(p_number INT) 
+RETURNS INT
+BEGIN
+    DECLARE i INT;
+    IF p_number <= 1 THEN
+        RETURN 0;
+    END IF;
+
+    IF p_number = 2 THEN
+        RETURN 1;
+    END IF;
+
+    IF p_number % 2 = 0 THEN
+        RETURN 0;
+    END IF;
+    SET i = 3;
+    WHILE (i * i) <= p_number DO
+        IF p_number % i = 0 THEN
+            RETURN 0; -- Not a prime number
+        END IF;
+        SET i = i + 2;
+    END WHILE;
+    RETURN 1;
+END //
+DELIMITER ;
+
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS CHECK_AND_DISPLAY_PRIME;
+CREATE PROCEDURE CHECK_AND_DISPLAY_PRIME(IN p_input_number INT)
+BEGIN
+    DECLARE is_prime_result INT;
+
+    SET is_prime_result = IS_PRIME_NUMBER(p_input_number);
+
+    SELECT is_prime_result;
+END //
+DELIMITER ;
+
+CALL CHECK_AND_DISPLAY_PRIME(7);
+
++-----------------+
+| is_prime_result |
++-----------------+
+|               1 |
++-----------------+
+1 row in set (0.000 sec)
+
+Mixed queries …if time permits
+ 
+//1.The HR department wants to know the names of all the employees who were hired after Blake. Create a query to display the name and hire date of any employee hired after employee  Blake.
+
+SELECT ename, hiredate
+FROM EMP
+WHERE hiredate > (SELECT hiredate FROM EMP WHERE ename = 'BLAKE');
+
++--------+------------+
+| ename  | hiredate   |
++--------+------------+
+| MARTIN | 1981-09-28 |
+| CLARK  | 1981-06-09 |
+| SCOTT  | 1982-12-09 |
+| KING   | 1981-11-17 |
+| TURNER | 1981-09-08 |
+| ADAMS  | 1983-01-12 |
+| JAMES  | 1981-12-03 |
+| FORD   | 1981-12-03 |
+| MILLER | 1982-01-23 |
++--------+------------+
+9 rows in set (0.027 sec)
+
+
+//2.Write a query to get  year, and number of employees joined each year.
+
+SELECT YEAR(hire_date) AS hire_year, COUNT(*) AS number_of_employees
+FROM employees
+GROUP BY YEAR(hire_date)
+ORDER BY hire_year;
+
+
+
+//3.Write a query to display all employees with experience more than 43 years.
+
+SELECT ename, hiredate
+FROM EMP
+WHERE (YEAR(CURDATE()) - YEAR(hiredate)) > 43;
+
++---------+------------+
+| ename   | hiredate   |
++---------+------------+
+| SMITH   | 1980-12-17 |
+| ALLEN   | 1981-02-20 |
+| WARD    | 1981-02-22 |
+| JONES   | 1981-04-02 |
+| MARTIN  | 1981-09-28 |
+| BLAKE   | 1981-05-01 |
+| CLARK   | 1981-06-09 |
+| KING    | 1981-11-17 |
+| TURNER  | 1981-09-08 |
+| JAMES   | 1981-12-03 |
+| FORD    | 1981-12-03 |
+| Priya   | 1981-02-20 |
+| Rishita | 1981-02-20 |
++---------+------------+
+13 rows in set (0.000 sec)
+
+
+
+//4.Display 3rd highest salary.
+
+SELECT sal
+FROM EMP e1
+WHERE 2 = (SELECT COUNT(DISTINCT sal) FROM EMP e2 WHERE e2.sal > e1.sal);
+
++------+
+| sal  |
++------+
+| 3450 |
++------+
+1 row in set (0.000 sec)
+
+
+//5.Write a query which will display all employees working in sales department.
+
+
+SELECT e.ename
+FROM EMP e
+JOIN DEPT d ON e.deptno = d.deptno
+WHERE d.dname = 'SALES';
+
++--------+
+| ename  |
++--------+
+| ALLEN  |
+| WARD   |
+| MARTIN |
+| BLAKE  |
+| TURNER |
+| JAMES  |
++--------+
+6 rows in set (0.000 sec)
+
+
+//6.Write a query to display year if more than 2 employees are hired in that year.
+
+SELECT YEAR(hiredate) AS hire_year
+FROM EMP
+GROUP BY hire_year
+HAVING COUNT(*) > 2;
+
++-----------+
+| hire_year |
++-----------+
+|      1981 |
++-----------+
+1 row in set (0.000 sec)
+
+

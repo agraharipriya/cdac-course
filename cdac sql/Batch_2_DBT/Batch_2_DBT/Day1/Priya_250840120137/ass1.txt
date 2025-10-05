@@ -1,0 +1,324 @@
+//1.Create  following Tables. Use appropriate datatypes. Insert given rows in the tables
+
+CREATE DATABASE Automobile;
+USE Automobile;
+
+CREATE TABLE Vehicle(
+	vid int,
+	vname varchar(15),
+	price double(8,2),
+	discount float(5,2),
+	milage int,
+	details varchar(50)
+
+); 
+
+INSERT INTO Vehicle
+VALUES (1,'Activa',80000,10,35,'Two  wheeler'),
+(2,'Santro',95000,20,20,'Product of Hyandai'),
+(3,'Yamaha',160000,5,70,'Sturdy and good'),
+(4,'i-10',300000,8,18,'Good small car'),
+(5,'WaganR',250000,10,25,'Good milage car'),
+(6,'Hero Splendor',75000,9,65,'Best bike'),
+(7,'Royal Enfield',190000,5,40,'a royal bike');
+
+SELECT * 
+FROM Vehicle;
+
++------+---------------+-----------+----------+--------+--------------------+
+| vid  | vname         | price     | discount | milage | details            |
++------+---------------+-----------+----------+--------+--------------------+
+|    1 | Activa        |  80000.00 |    10.00 |     35 | Two  wheeler       |
+|    2 | Santro        |  95000.00 |    20.00 |     20 | Product of Hyandai |
+|    3 | Yamaha        | 160000.00 |     5.00 |     70 | Sturdy and good    |
+|    4 | i-10          | 300000.00 |     8.00 |     18 | Good small car     |
+|    5 | WaganR        | 250000.00 |    10.00 |     25 | Good milage car    |
+|    6 | Hero Splendor |  75000.00 |     9.00 |     65 | Best bike          |
+|    7 | Royal Enfield | 190000.00 |     5.00 |     40 | a royal bike       |
++------+---------------+-----------+----------+--------+--------------------+
+
+CREATE TABLE Customer(
+	custid int,
+	cname varchar(10),
+	location varchar(20)
+);
+
+INSERT INTO Customer
+VALUES (1,'Nilima','Pimpri'),
+(2,'Ganesh','Pune'),
+(3,'Kishor','Kothrud'),
+(4,'Priya','Aundh');
+
+
+SELECT * 
+FROM Customer;
++--------+--------+----------+
+| custid | cname  | location |
++--------+--------+----------+
+|      1 | Nilima | Pimpri   |
+|      2 | Ganesh | Pune     |
+|      3 | Kishor | Kothrud  |
+|      4 | Priya  | Aundh    |
++--------+--------+----------+
+
+CREATE TABLE Salesman(
+	sid int,
+	sname varchar(10),
+	city varchar(15),
+	experience int
+);
+
+INSERT INTO Salesman
+VALUES (10,'Rajesh','mumbai',5),
+(11,'Seema','Pune',8),
+(12,'Shailesh', 'Nagpur',7),
+(13,'Rakhi','Pune',2);
+
+SELECT *
+FROM Salesman;
++------+----------+--------+------------+
+| sid  | sname    | city   | experience |
++------+----------+--------+------------+
+|   10 | Rajesh   | mumbai |          5 |
+|   11 | Seema    | Pune   |          8 |
+|   12 | Shailesh | Nagpur |          7 |
+|   13 | Rakhi    | Pune   |          2 |
++------+----------+--------+------------+
+
+//2.Display vid, vname, price and details from table vehicle with column heading as Vehicle id, vehicle name,price,discount and details.
+
+SELECT vid AS "Vehicle id",vname AS "vehicle name", price,discount ,details
+FROM Vehicle;
+
++------------+---------------+-----------+----------+--------------------+
+| Vehicle id | vehicle name  | price     | discount | details            |
++------------+---------------+-----------+----------+--------------------+
+|          1 | Activa        |  80000.00 |    10.00 | Two  wheeler       |
+|          2 | Santro        |  95000.00 |    20.00 | Product of Hyandai |
+|          3 | Yamaha        | 160000.00 |     5.00 | Sturdy and good    |
+|          4 | i-10          | 300000.00 |     8.00 | Good small car     |
+|          5 | WaganR        | 250000.00 |    10.00 | Good milage car    |
+|          6 | Hero Splendor |  75000.00 |     9.00 | Best bike          |
+|          7 | Royal Enfield | 190000.00 |     5.00 | a royal bike       |
++------------+---------------+-----------+----------+--------------------+
+
+//3.Display names of salesmen who work in Pune.
+
+SELECT sname, city
+FROM Salesman
+WHERE city='Pune';
+
++-------+------+
+| sname | city |
++-------+------+
+| Seema | Pune |
+| Rakhi | Pune |
++-------+------+
+
+//4.Delete customer from Pimpri area.
+
+DELETE FROM Customer
+WHERE location = 'Pimpri';
+
+SELECT * FROM Customer;
+
++--------+--------+----------+
+| custid | cname  | location |
++--------+--------+----------+
+|      2 | Ganesh | Pune     |
+|      3 | Kishor | Kothrud  |
+|      4 | Priya  | Aundh    |
++--------+--------+----------+
+
+//5.Add some new customers
+// 'Geeta' with custid 5 and area as 'Pimpri'.
+//  'Raj' with custid 6 and area 'Aundh'
+//  'Yash' with custid 7 and area 'Aundh'
+
+INSERT INTO Customer (custid,cname,location)
+VALUES (5,'Geeta','Pimpri'),
+(6,'Raj','Aundh'),
+(7,'Yash','Aundh');
+
+SELECT * FROM Customer;
+
++--------+--------+----------+
+| custid | cname  | location |
++--------+--------+----------+
+|      2 | Ganesh | Pune     |
+|      3 | Kishor | Kothrud  |
+|      4 | Priya  | Aundh    |
+|      5 | Geeta  | Pimpri   |
+|      6 | Raj    | Aundh    |
+|      7 | Yash   | Aundh    |
++--------+--------+----------+
+
+//6.Display information of vehicle , Royal Enfild .
+
+SELECT * 
+FROM Vehicle 
+WHERE vname= 'Royal Enfield';
+
++------+---------------+-----------+----------+--------+--------------+
+| vid  | vname         | price     | discount | milage | details      |
++------+---------------+-----------+----------+--------+--------------+
+|    7 | Royal Enfield | 190000.00 |     5.00 |     40 | a royal bike |
++------+---------------+-----------+----------+--------+--------------+
+
+//7.Display information of all Bikes.(Royal Enfild,Hero splender,Yahama).
+
+SELECT *
+FROM Vehicle 
+WHERE vname IN ('Royal Enfield' , 'Hero Splendor' , 'Yamaha');
+
++------+---------------+-----------+----------+--------+-----------------+
+| vid  | vname         | price     | discount | milage | details         |
++------+---------------+-----------+----------+--------+-----------------+
+|    3 | Yamaha        | 160000.00 |     5.00 |     70 | Sturdy and good |
+|    6 | Hero Splendor |  75000.00 |     9.00 |     65 | Best bike       |
+|    7 | Royal Enfield | 190000.00 |     5.00 |     40 | a royal bike    |
++------+---------------+-----------+----------+--------+-----------------+
+
+//8.List all vehicles with buying price  .>=160000 and  <=250000
+
+SELECT *
+FROM Vehicle
+WHERE price BETWEEN 160000 AND 250000;
+
++------+---------------+-----------+----------+--------+-----------------+
+| vid  | vname         | price     | discount | milage | details         |
++------+---------------+-----------+----------+--------+-----------------+
+|    3 | Yamaha        | 160000.00 |     5.00 |     70 | Sturdy and good |
+|    5 | WaganR        | 250000.00 |    10.00 |     25 | Good milage car |
+|    7 | Royal Enfield | 190000.00 |     5.00 |     40 | a royal bike    |
++------+---------------+-----------+----------+--------+-----------------+
+
+//9.Display vid, vname, price,details and total price for each vehicle.
+//total price = price - (price *(discount/100)).
+
+SELECT vid,vname,price,details,round(price - (price *(discount/100))) AS "total price"
+FROM Vehicle;
+
++------+---------------+-----------+--------------------+-------------+
+| vid  | vname         | price     | details            | total price |
++------+---------------+-----------+--------------------+-------------+
+|    1 | Activa        |  80000.00 | Two  wheeler       |       72000 |
+|    2 | Santro        |  95000.00 | Product of Hyandai |       76000 |
+|    3 | Yamaha        | 160000.00 | Sturdy and good    |      152000 |
+|    4 | i-10          | 300000.00 | Good small car     |      276000 |
+|    5 | WaganR        | 250000.00 | Good milage car    |      225000 |
+|    6 | Hero Splendor |  75000.00 | Best bike          |       68250 |
+|    7 | Royal Enfield | 190000.00 | a royal bike       |      180500 |
++------+---------------+-----------+--------------------+-------------+
+
+//10.Display all the information of salesmen having experience more than 5 years.
+
+SELECT * 
+FROM Salesman
+WHERE experience > 5;
+
++------+----------+--------+------------+
+| sid  | sname    | city   | experience |
++------+----------+--------+------------+
+|   11 | Seema    | Pune   |          8 |
+|   12 | Shailesh | Nagpur |          7 |
++------+----------+--------+------------+
+
+//11.For the given schema, create the table and solve following queries
+//employee(eno,ename,basic,incentives)
+
+CREATE TABLE employee(
+	eno int,
+	ename varchar(10),
+	basic double(9,3),
+	incentive double(7,2)
+);
+
+INSERT INTO employee
+VALUES (1,'Rajesh',20000,1500),
+(2,'Sarita',25000,1000),
+(3,'Meera',15000,3000),
+(4,'Jitesh',30000,500),
+(5,'Ramesh',12000,3000);
+
+SELECT * FROM employee;
++------+--------+-----------+-----------+
+| eno  | ename  | basic     | incentive |
++------+--------+-----------+-----------+
+|    1 | Rajesh | 20000.000 |   1500.00 |
+|    2 | Sarita | 25000.000 |   1000.00 |
+|    3 | Meera  | 15000.000 |   3000.00 |
+|    4 | Jitesh | 30000.000 |    500.00 |
+|    5 | Ramesh | 12000.000 |   3000.00 |
++------+--------+-----------+-----------+
+
+
+//11.1  List all employees having basic>15000
+
+SELECT ename, basic
+FROM employee
+WHERE basic>15000;
+
++--------+-----------+
+| ename  | basic     |
++--------+-----------+
+| Rajesh | 20000.000 |
+| Sarita | 25000.000 |
+| Jitesh | 30000.000 |
++--------+-----------+
+
+//11.2 New employee Ajay joins the firm. His eno is 20, basic is 16000 and he is not eligible for incentivies.  Store this information in table.
+
+INSERT INTO employee (eno,ename,basic,incentive)
+VALUES (20,'Ajay',16000,null);
+
+SELECT * FROM employee;
++------+--------+-----------+-----------+
+| eno  | ename  | basic     | incentive |
++------+--------+-----------+-----------+
+|    1 | Rajesh | 20000.000 |   1500.00 |
+|    2 | Sarita | 25000.000 |   1000.00 |
+|    3 | Meera  | 15000.000 |   3000.00 |
+|    4 | Jitesh | 30000.000 |    500.00 |
+|    5 | Ramesh | 12000.000 |   3000.00 |
+|   20 | Ajay   | 16000.000 |      NULL |
++------+--------+-----------+-----------+
+
+//11.3  Increase the salary of all employees earning less than 20000 basic by 5%.
+
+SELECT eno,ename,basic, incentive,basic+(basic*0.05) AS "Incremented Basic"
+FROM employee
+WHERE basic <20000;
+
++------+--------+-----------+-----------+-------------------+
+| eno  | ename  | basic     | incentive | Incremented Basic |
++------+--------+-----------+-----------+-------------------+
+|    3 | Meera  | 15000.000 |   3000.00 |         15750.000 |
+|    5 | Ramesh | 12000.000 |   3000.00 |         12600.000 |
+|   20 | Ajay   | 16000.000 |      NULL |         16800.000 |
++------+--------+-----------+-----------+-------------------+
+
+//11.4 New employee Ajay joins the firm. His eno is 20, basic is 16000 and he is not eligible for incentivies.  Store this information in table.
+
+INSERT INTO employee (eno,ename,basic,incentive)
+VALUES (20,'Ajay',16000,null);
+
+SELECT * FROM employee;
++------+--------+-----------+-----------+
+| eno  | ename  | basic     | incentive |
++------+--------+-----------+-----------+
+|    1 | Rajesh | 20000.000 |   1500.00 |
+|    2 | Sarita | 25000.000 |   1000.00 |
+|    3 | Meera  | 15000.000 |   3000.00 |
+|    4 | Jitesh | 30000.000 |    500.00 |
+|    5 | Ramesh | 12000.000 |   3000.00 |
+|   20 | Ajay   | 16000.000 |      NULL |
+|   20 | Ajay   | 16000.000 |      NULL |
++------+--------+-----------+-----------+
+
+
+
+
+
+
+

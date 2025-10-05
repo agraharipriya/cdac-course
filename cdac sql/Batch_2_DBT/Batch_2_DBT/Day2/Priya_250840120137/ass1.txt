@@ -1,0 +1,609 @@
+//1.Delete customer from Pimpri area.
+
++--------+--------+----------+
+| custid | cname  | location |
++--------+--------+----------+
+|      2 | Ganesh | Pune     |
+|      3 | Kishor | Kothrud  |
+|      4 | Priya  | Aundh    |
+|      5 | Geeta  | Pimpri   |
+|      6 | Raj    | Aundh    |
+|      7 | Yash   | Aundh    |
++--------+--------+----------+
+
+DELETE 
+FROM Customer
+WHERE location='Pimpri';
+
+SELECT * FROM Customer;
++--------+--------+----------+
+| custid | cname  | location |
++--------+--------+----------+
+|      2 | Ganesh | Pune     |
+|      3 | Kishor | Kothrud  |
+|      4 | Priya  | Aundh    |
+|      6 | Raj    | Aundh    |
+|      7 | Yash   | Aundh    |
++--------+--------+----------+
+
+//2.Delete customer from area Aundh whose name is Priya. 
+
+DELETE 
+FROM Customer
+WHERE cname='Priya' and location='Aundh'; 
+
+SELECT * FROM Customer;
++--------+--------+----------+
+| custid | cname  | location |
++--------+--------+----------+
+|      2 | Ganesh | Pune     |
+|      3 | Kishor | Kothrud  |
+|      6 | Raj    | Aundh    |
+|      7 | Yash   | Aundh    |
++--------+--------+----------+
+
+//3.Create a copy of table customer and salesman by name customer1 and salesman1
+
+CREATE TABLE customer1
+AS
+SELECT *
+FROM Customer;
+
+SELECT * FROM customer1;
++--------+--------+----------+
+| custid | cname  | location |
++--------+--------+----------+
+|      2 | Ganesh | Pune     |
+|      3 | Kishor | Kothrud  |
+|      6 | Raj    | Aundh    |
+|      7 | Yash   | Aundh    |
++--------+--------+----------+
+
+CREATE TABLE salesman1
+AS
+SELECT *
+FROM Salesman;
+
+SELECT * FROM salesman1;
++------+----------+--------+------------+
+| sid  | sname    | city   | experience |
++------+----------+--------+------------+
+|   10 | Rajesh   | mumbai |          5 |
+|   11 | Seema    | Pune   |          8 |
+|   12 | Shailesh | Nagpur |          7 |
+|   13 | Rakhi    | Pune   |          2 |
++------+----------+--------+------------+
+
+//4.Delete entire table Salesman1.
+
+DROP TABLE salesman1;
+
+show tables;
++----------------------+
+| Tables_in_Automobile |
++----------------------+
+| Customer             |
+| Salesman             |
+| Vehicle              |
+| customer1            |
+| employee             |
++----------------------+
+
+//5.Consider table employee(eno, ename,basic,incentives) and solve below
+Ramesh is promoted as Head Clerk and now earns salary 60000. Write a query.    
+Change incentive of Jitesh to 1000.
+Meera leaves the company. Make nacessary changes in the table.
+
+UPDATE employee
+SET basic = 60000
+WHERE ename='Ramesh';
+
+SELECT * FROM employee;
++------+--------+-----------+-----------+
+| eno  | ename  | basic     | incentive |
++------+--------+-----------+-----------+
+|    1 | Rajesh | 20000.000 |   1500.00 |
+|    2 | Sarita | 25000.000 |   1000.00 |
+|    3 | Meera  | 15000.000 |   3000.00 |
+|    4 | Jitesh | 30000.000 |    500.00 |
+|    5 | Ramesh | 60000.000 |   3000.00 |
+|   20 | Ajay   | 16000.000 |      NULL |
+|   20 | Ajay   | 16000.000 |      NULL |
++------+--------+-----------+-----------+
+
+UPDATE employee
+SET incentive = 1000
+WHERE ename='Jitesh';
+
+SELECT * FROM employee;
+
++------+--------+-----------+-----------+
+| eno  | ename  | basic     | incentive |
++------+--------+-----------+-----------+
+|    1 | Rajesh | 20000.000 |   1500.00 |
+|    2 | Sarita | 25000.000 |   1000.00 |
+|    3 | Meera  | 15000.000 |   3000.00 |
+|    4 | Jitesh | 30000.000 |   1000.00 |
+|    5 | Ramesh | 60000.000 |   3000.00 |
+|   20 | Ajay   | 16000.000 |      NULL |
+|   20 | Ajay   | 16000.000 |      NULL |
++------+--------+-----------+-----------+
+
+
+DELETE 
+FROM employee
+WHERE ename='Meera';
+
+SELECT * FROM employee;
+
++------+--------+-----------+-----------+
+| eno  | ename  | basic     | incentive |
++------+--------+-----------+-----------+
+|    1 | Rajesh | 20000.000 |   1500.00 |
+|    2 | Sarita | 25000.000 |   1000.00 |
+|    4 | Jitesh | 30000.000 |   1000.00 |
+|    5 | Ramesh | 60000.000 |   3000.00 |
+|   20 | Ajay   | 16000.000 |      NULL |
+|   20 | Ajay   | 16000.000 |      NULL |
++------+--------+-----------+-----------+
+---------------------------------------------------------------------------
+------------------------TABLE 1 EMP----------------------------------------
+
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+
+------------------------ TABLE 2 DEPT-----------------------------------
+
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+
+
+//1.To list all records with sal > 2000 and comm>200.
+
+SELECT *
+FROM EMP
+WHERE SAL>2000 AND COMM>200;
+
+Empty set (0.000 sec)
+
+//2.To list all records with job=’Clerk’ or sal>2000
+
+SELECT *
+FROM EMP
+WHERE JOB='Clerk' OR SAL>2000;
+
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+
+
+//3.To list all the records with sal=1250 or 1100   
+
+SELECT *
+FROM EMP
+WHERE SAL=1250 or SAL=1100;
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+
+
+//4.To list all employees with sal>1250 and <2850
+
+SELECT *
+FROM EMP
+WHERE SAL >1250 AND SAL<2850;
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7782 | CLARK  | MANAGER  | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+
+//5.Retrieve the details (Name, Salary and dept no) of the emp who are working in department code 20.
+
+SELECT ENAME, SAL,DEPTNO
+FROM EMP
+WHERE DEPTNO=20;
+
++-------+------+--------+
+| ENAME | SAL  | DEPTNO |
++-------+------+--------+
+| SMITH |  800 |     20 |
+| JONES | 2975 |     20 |
+| SCOTT | 3000 |     20 |
+| ADAMS | 1100 |     20 |
+| FORD  | 3000 |     20 |
++-------+------+--------+
+
+//6.Display all employees who have joined after 9th june 81.
+
+SELECT *
+FROM EMP
+WHERE HIREDATE>'1981-06-09';
+
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+
+//7.Display empno,empname,sal, comm and total salary.
+//Total Salary = comm + sal
+
+SELECT EMPNO, ENAME,SAL,COMM, CASE WHEN COMM IS NULL THEN SAL
+WHEN COMM IS NOT NULL THEN SAL+ COMM 
+END AS "TOTAL SALARY"
+FROM EMP;
+
++-------+--------+------+------+--------------+
+| EMPNO | ENAME  | SAL  | COMM | TOTAL SALARY |
++-------+--------+------+------+--------------+
+|  7369 | SMITH  |  800 | NULL |          800 |
+|  7499 | ALLEN  | 1600 |  300 |         1900 |
+|  7521 | WARD   | 1250 |  500 |         1750 |
+|  7566 | JONES  | 2975 | NULL |         2975 |
+|  7654 | MARTIN | 1250 | 1400 |         2650 |
+|  7698 | BLAKE  | 2850 | NULL |         2850 |
+|  7782 | CLARK  | 2450 | NULL |         2450 |
+|  7788 | SCOTT  | 3000 | NULL |         3000 |
+|  7839 | KING   | 5000 | NULL |         5000 |
+|  7844 | TURNER | 1500 |    0 |         1500 |
+|  7876 | ADAMS  | 1100 | NULL |         1100 |
+|  7900 | JAMES  |  950 | NULL |          950 |
+|  7902 | FORD   | 3000 | NULL |         3000 |
+|  7934 | MILLER | 1300 | NULL |         1300 |
++-------+--------+------+------+--------------+
+
+//8.Display all employees with sal >2000 or job is either clerk or Salesman.
+
+SELECT *
+FROM EMP
+WHERE SAL>2000 OR JOB IN ('CLERK' , 'SALESMAN');
+
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+
+//9.List the employees in dept 20 and 30 who did not get any commission.
+
+SELECT *
+FROM EMP
+WHERE DEPTNO IN (20,30) AND COMM IS NULL OR COMM  = 0; 
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7566 | JONES  | MANAGER  | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7788 | SCOTT  | ANALYST  | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 | 3000 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+
+//10.Display all employees who works in either dept 10 or 30 or joined in year 1982
+
+SELECT *
+FROM EMP
+WHERE DEPTNO IN (10,30) OR YEAR(HIREDATE)='1982';
+
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+
+//11.There is a salary hike by 20% . Display the information from emp table as empno,ename,sal and new sal.
+
+SELECT EMPNO, ENAME,SAL, SAL+0.20*SAL AS "NEW SAL"
+FROM EMP;
+
++-------+--------+------+---------+
+| EMPNO | ENAME  | SAL  | NEW SAL |
++-------+--------+------+---------+
+|  7369 | SMITH  |  800 |     960 |
+|  7499 | ALLEN  | 1600 |    1920 |
+|  7521 | WARD   | 1250 |    1500 |
+|  7566 | JONES  | 2975 |    3570 |
+|  7654 | MARTIN | 1250 |    1500 |
+|  7698 | BLAKE  | 2850 |    3420 |
+|  7782 | CLARK  | 2450 |    2940 |
+|  7788 | SCOTT  | 3000 |    3600 |
+|  7839 | KING   | 5000 |    6000 |
+|  7844 | TURNER | 1500 |    1800 |
+|  7876 | ADAMS  | 1100 |    1320 |
+|  7900 | JAMES  |  950 |    1140 |
+|  7902 | FORD   | 3000 |    3600 |
+|  7934 | MILLER | 1300 |    1560 |
++-------+--------+------+---------+
+
+//12.Create new table emp10 same as emp without any data. check it's structure.
+
+CREATE TABLE emp10
+AS
+SELECT *
+FROM EMP
+WHERE 2=3;
+
+SELECT * FROM emp10;
+Empty set (0.000 sec)
+
+DESCRIBE emp10;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   |     | NULL    |       |
+| ENAME    | varchar(10)      | YES  |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  |     | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+
+//13.Insert new row with data of your choice  in emp10 table where manager(mgr) is null.
+
+INSERT INTO emp10(EMPNO,ENAME,JOB,MGR,HIREDATE,SAL,COMM,DEPTNO)
+VALUES
+(7771,'Priya','Developer',NULL,'2022-10-15',5000,1450,20);
+
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7771 | Priya | MANAGER | NULL | 2022-10-15 | 5000 | 1450 |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+
+
+//14.Display the emp details who do not have manager.
+
+SELECT *
+FROM EMP
+WHERE MGR IS NULL;
+
++-------+-------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+-----------+------+------------+------+------+--------+
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
++-------+-------+-----------+------+------------+------+------+--------+
+
+
+//15.Create table dept10 same as dept.
+CREATE TABLE dept10
+AS
+  SELECT *
+   FROM DEPT;
+   
+ SELECT * FROM dept10;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+  
+//16.Use emp10 table to perform following query Update employee salary. Increase sal of each employee by 15% of sal+comm,change the mgr to 777 for all employees in dept 10. 
+
+UPDATE 	emp10
+SET SAL=3470.62,DEPTNO=10
+WHERE ENAME ='Priya';
+
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7771 | Priya | MANAGER | NULL | 2022-10-15 |3470 | 1450 |     10 |
++-------+-------+---------+------+------------+------+------+--------+
+
+UPDATE emp10
+SET
+    sal = sal + (sal + comm) * 0.15,
+    mgr = 777
+WHERE deptno = 10;
+
++-------+-------+---------+------+------------+---------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL     | COMM | DEPTNO |
++-------+-------+---------+------+------------+---------+------+--------+
+|  7771 | Priya | MANAGER |  777 | 2022-10-15 | 4208.72 | 1450 |     10 |
++-------+-------+---------+------+------------+---------+------+--------+
+
+
+
+//17.Display all employees who joined between years 1981 to 1983.
+
+SELECT * 
+FROM EMP
+WHERE YEAR(HIREDATE) BETWEEN 1981 AND 1983;  
+   
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+   
+//18.display empno, name and department number of an emp working under manager with id 7698.
+
+SELECT EMPNO, ENAME,DEPTNO
+FROM EMP
+WHERE MGR=7698;
+
++-------+--------+--------+
+| EMPNO | ENAME  | DEPTNO |
++-------+--------+--------+
+|  7499 | ALLEN  |     30 |
+|  7521 | WARD   |     30 |
+|  7654 | MARTIN |     30 |
+|  7844 | TURNER |     30 |
+|  7900 | JAMES  |     30 |
++-------+--------+--------+
+
+//19.List all managers working in dept 10.  
+ 
+ SELECT ENAME,JOB,DEPTNO
+ FROM EMP
+ WHERE DEPTNO=10 AND JOB='MANAGER';
+ 
+ +-------+---------+--------+
+| ENAME | JOB     | DEPTNO |
++-------+---------+--------+
+| CLARK | MANAGER |     10 |
++-------+---------+--------+
+
+//20.Display all jobs from emp table. 
+
+SELECT DISTINCT JOB 
+FROM EMP;
+
++-----------+
+| JOB       |
++-----------+
+| CLERK     |
+| SALESMAN  |
+| MANAGER   |
+| ANALYST   |
+| PRESIDENT |
++-----------+
+
+//21.Display all unique  deptnos in which employees are working.
+
+
+SELECT DISTINCT DEPTNO 
+FROM EMP;
+
++--------+
+| DEPTNO |
++--------+
+|     20 |
+|     30 |
+|     10 |
++--------+
+
+
+//22.Implement following using case statement. Use data from emp database.
+    If comm is null ‘need improvement’ If <500 “ok” If >=500 and < 1000 ‘good' ‘Excellent'. 
+    
+SELECT *,
+CASE WHEN  COMM IS NULL THEN "need improvement"
+     WHEN COMM<500 THEN "ok"
+     WHEN COMM>=500 AND COMM<1000 THEN "good"
+	 WHEN COMM>1000 THEN "Excellent"
+	 ELSE 'N/A'
+	 END AS "REMARK"
+FROM EMP;
+ 
+ +-------+--------+-----------+------+------------+------+------+--------+------------------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO | REMARK           |
++-------+--------+-----------+------+------------+------+------+--------+------------------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 | need improvement |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 | ok               |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 | good             |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 | need improvement |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 | Excellent        |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 | need improvement |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 | need improvement |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 | need improvement |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 | need improvement |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 | ok               |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 | need improvement |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 | need improvement |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 | need improvement |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 | need improvement |
++-------+--------+-----------+------+------------+------+------+--------+------------------+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   

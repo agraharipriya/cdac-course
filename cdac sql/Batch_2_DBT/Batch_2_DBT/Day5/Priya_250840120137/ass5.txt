@@ -1,0 +1,643 @@
+
+
+
+ SELECT * FROM EMP;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+14 rows in set (0.000 sec)
+
+
+
+
+//1.Find all employees with name ending with R . 
+
+SELECT * FROM EMP WHERE ENAME REGEXP('R$');
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.000 sec)
+
+
+
+2.Find all employees with name starting with M and ending with R.
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^M.*R$');
+
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+
+
+//3.To find all employees with name starting with either M or A.
+
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^[AM]');
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1760 |  300 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1375 | 1400 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1210 | NULL |     20 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+
+4.List the employees name having letter 'L' as the second character.
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^.L');
++-------+-------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN | SALESMAN | 7698 | 1981-02-20 | 1760 |  300 |     30 |
+|  7698 | BLAKE | MANAGER  | 7839 | 1981-05-01 | 3135 | NULL |     30 |
+|  7782 | CLARK | MANAGER  | 7839 | 1981-06-09 | 2695 | NULL |     10 |
++-------+-------+----------+------+------------+------+------+--------+
+
+
+//5.Find all employees with name having L at 3 rd position.
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^..L');
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1760 |  300 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+
+
+//6.To list all employees with name ending by ES.  
+
+SELECT * FROM EMP WHERE ENAME REGEXP('ES$');
+
++-------+-------+---------+------+------------+--------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+-------+---------+------+------------+--------+------+--------+
+|  7566 | JONES | MANAGER | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7900 | JAMES | CLERK   | 7698 | 1981-12-03 |   1045 | NULL |     30 |
++-------+-------+---------+------+------------+--------+------+--------+
+2 rows in set (0.000 sec)
+
+
+
+7.To list all employees with job starting with C and ending with K.
+
+SELECT ENAME, JOB 
+FROM EMP
+WHERE JOB REGEXP('^C.*K$');
+
++--------+-------+
+| ENAME  | JOB   |
++--------+-------+
+| SMITH  | CLERK |
+| ADAMS  | CLERK |
+| JAMES  | CLERK |
+| MILLER | CLERK |
++--------+-------+
+
+
+//8.To find all employees with name starting with either M or A and last character as either R or E.
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^[MA].*[RE]$');
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+
+
+//9.To find all employee with name starting with A or M and ending with E.
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^[AM].*E$');
+
+Empty set (0.000 sec)
+
+
+//10.Find all employees with name starting with A and ending with N, or it may start with S and end with H.
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^A.*N$|^S.*H$');
+
++-------+-------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+----------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK    | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7499 | ALLEN | SALESMAN | 7698 | 1981-02-20 | 1760 |  300 |     30 |
++-------+-------+----------+------+------------+------+------+--------+
+
+
+
+//11.Find all employees with name starting with M, having  L at 3 rd position and ends with R.
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^M.L.*R$');
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+
+
+
+//12.Find all employees with name having L at 3 rd position and E at second last position.
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^..L.*E.$');
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1760 |  300 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+
+
+//13.Find all employees with name not starting with A or M
+
+SELECT * FROM EMP WHERE ENAME REGEXP('^[^AM]');
+
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
++-------+--------+-----------+------+------------+--------+------+--------+
+10 rows in set (0.000 sec)
+
+
+//14.Display all employees with sal >1000 and sal<3000 and job has A at starting position and ends with T.
+
+SELECT * 
+FROM EMP 
+WHERE SAL BETWEEN 1000 AND 3000 AND JOB REGEXP('^A.*T$');
+
+Empty set (0.000 sec)
+
+
+//15.Write a query  to display empno, ename, sal , increased sal by 10% and commission for all employees  whose  name starts with A,M or S.
+
+SELECT EMPNO,ENAME, SAL , SAL+0.10*SAL AS 'INCREASED SALARY', COMM
+FROM EMP
+WHERE ENAME REGEXP('^[AMS]');
++-------+--------+------+------------------+------+
+| EMPNO | ENAME  | SAL  | INCREASED SALARY | COMM |
++-------+--------+------+------------------+------+
+|  7369 | SMITH  |  880 |              968 | NULL |
+|  7499 | ALLEN  | 1760 |             1936 |  300 |
+|  7654 | MARTIN | 1375 |           1512.5 | 1400 |
+|  7788 | SCOTT  | 3300 |             3630 | NULL |
+|  7876 | ADAMS  | 1210 |             1331 | NULL |
+|  7934 | MILLER | 1430 |             1573 | NULL |
++-------+--------+------+------------------+------+
+6 rows in set (0.000 sec)
+
+
+16.Display all employees whose name starts with A and ends with either N or S, or works in dept 10. 
+
+SELECT *
+FROM EMP
+WHERE ENAME REGEXP('^A.*[NS]$') OR DEPTNO=10;
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1760 |  300 |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2695 | NULL |     10 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5500 | NULL |     10 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1210 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+5 rows in set (0.000 sec)
+
+  
+17.List all departments whose name has atleast 8 characters.
+
+SELECT DNAME
+FROM DEPT
+WHERE DNAME REGEXP '^.{8,}$';
+
++------------+
+| DNAME      |
++------------+
+| ACCOUNTING |
+| RESEARCH   |
+| OPERATIONS |
++------------+
+3 rows in set (0.000 sec)
+
+
+//18.List the employees name having 'E' as a second last character.
+
+SELECT *
+FROM EMP
+WHERE ENAME REGEXP('E.$');
++-------+--------+----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+----------+------+------------+--------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 |   1760 |  300 |     30 |
+|  7566 | JONES  | MANAGER  | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+----------+------+------------+--------+------+--------+
+
+
+19.List the details of the employee , whose names start with ‘A’ and end with ‘S’ or whose names contains N as the second or third character,and end with either ‘N’ or ‘S’.
+
+SELECT *
+FROM EMP
+WHERE ENAME REGEXP('^A.*S$|^.N|^..N.*[NS]$');
+
++-------+-------+---------+------+------------+--------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+-------+---------+------+------------+--------+------+--------+
+|  7566 | JONES | MANAGER | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7876 | ADAMS | CLERK   | 7788 | 1983-01-12 |   1210 | NULL |     20 |
++-------+-------+---------+------+------------+--------+------+--------+
+2 rows in set (0.000 sec)
+
+
+//20.List employees whose name starts with either 'A' or 'S' in dept 20.
+
+SELECT *
+FROM EMP
+WHERE ENAME REGEXP('^[AS]') AND DEPTNO=20;
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3300 | NULL |     20 |
+|  7876 | ADAMS | CLERK   | 7788 | 1983-01-12 | 1210 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+3 rows in set (0.000 sec)
+
+21.To list all employees with job starting with C , E at 3rd position and  ending with K.
+
+SELECT *
+FROM EMP
+WHERE JOB REGEXP('^C.E.*K$');
+
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7876 | ADAMS  | CLERK | 7788 | 1983-01-12 | 1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK | 7698 | 1981-12-03 | 1045 | NULL |     30 |
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+4 rows in set (0.000 sec)
+
+
+//22.To list all employees with job containing L at third position and M at third last position.
+
+SELECT * 
+FROM EMP
+WHERE JOB REGEXP('^..L.*M..$'); 
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1760 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1375 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1375 | 1400 |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
++-------+--------+----------+------+------------+------+------+--------+
+4 rows in set (0.000 sec)
+
+
+//23.To list all employees with camm is null and name starts with ‘S’
+
+SELECT *
+FROM EMP
+WHERE COMM IS NULL AND ENAME REGEXP('^S');
+
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3300 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+2 rows in set (0.000 sec)
+
+
+//24.List employees in all dept whose salary not in the range of 2000 to 3000 with the job which is having a  string   called 'MAN' at the end.  
+
+SELECT *
+FROM EMP
+WHERE (SAL < 2000 OR SAL > 3000) AND JOB REGEXP('.*MAN$'); 
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1760 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1375 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1375 | 1400 |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
++-------+--------+----------+------+------------+------+------+--------+
+4 rows in set (0.000 sec)
+
+//25.List all the employee whose name does not end with 'S' in dept 20 and 30?
+
+SELECT *
+FROM EMP
+WHERE ENAME REGEXP('[^S$]$') AND DEPTNO IN (20,30);
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1760 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1375 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1375 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 3135 | NULL |     30 |
+|  7788 | SCOTT  | ANALYST  | 7566 | 1982-12-09 | 3300 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 | 3300 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+8 rows in set (0.000 sec)
+
+
+//26.Display dept names which are having letter 'O'.
+
+SELECT DNAME
+FROM DEPT
+WHERE DNAME REGEXP('.*O.*');
+
++------------+
+| DNAME      |
++------------+
+| ACCOUNTING |
+| OPERATIONS |
++------------+
+2 rows in set (0.000 sec)
+
+//27.Display list all employees whose name ends with ER.
+
+SELECT *
+FROM EMP
+WHERE ENAME REGEXP('.*ER$');
+
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.000 sec)
+
+
+
+//28.Display all employees where comm is null and name starts with ‘S’.
+
+SELECT *
+FROM EMP
+WHERE COMM IS NULL AND ENAME REGEXP('^S');
+
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3300 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+2 rows in set (0.000 sec)
+
+
+--------------------------------------------------------------GROUP BY AND MIXED QUERIES----------------------------------
+
+//1.List sum of salary for each department.
+
+SELECT DEPTNO,SUM(SAL)
+FROM EMP
+GROUP BY DEPTNO;
+
++--------+----------+
+| DEPTNO | SUM(SAL) |
++--------+----------+
+|     10 |     9625 |
+|     20 |  11962.5 |
+|     30 |    10340 |
++--------+----------+
+
+
+//2.List department wise sum sal only if the sum for any department is  > 10000.
+
+SELECT DEPTNO,SUM(SAL)
+FROM EMP
+GROUP BY DEPTNO
+HAVING SUM(SAL)>10000;
+
++--------+----------+
+| DEPTNO | SUM(SAL) |
++--------+----------+
+|     20 |  11962.5 |
+|     30 |    10340 |
++--------+----------+
+
+
+//3.Display job wise sum of salary if the sum salary is >6000. Exclude dept 30 .
+
+SELECT DEPTNO, JOB, SUM(SAL)
+FROM EMP
+WHERE DEPTNO != 30
+GROUP BY  JOB
+HAVING SUM(SAL) > 6000;
+
++--------+---------+----------+
+| DEPTNO | JOB     | SUM(SAL) |
++--------+---------+----------+
+|     20 | ANALYST |     6600 |
++--------+---------+----------+
+1 row in set (0.000 sec)
+
+4.Display job wise max sal only for managers, clerks, salesman working in dept 10 and 20. Sort the data by des order of the max salary.
+
+SELECT JOB ,DEPTNO,MAX(SAL)
+FROM EMP
+WHERE DEPTNO IN (10,20) AND JOB IN ('MANAGER','CLERK','SALESMAN')
+GROUP BY JOB
+ORDER BY MAX(SAL) DESC;
+
++---------+--------+----------+
+| JOB     | DEPTNO | MAX(SAL) |
++---------+--------+----------+
+| MANAGER |     20 |   3272.5 |
+| CLERK   |     20 |     1430 |
++---------+--------+----------+
+2 rows in set (0.000 sec)
+
+
+//5.Display job wise number of employees in all the department with total salary > 3000.
+
+SELECT JOB,DEPTNO,SUM(SAL)
+FROM EMP
+GROUP BY JOB
+HAVING SUM(SAL)>3000;
+
++-----------+--------+----------+
+| JOB       | DEPTNO | SUM(SAL) |
++-----------+--------+----------+
+| ANALYST   |     20 |     6600 |
+| CLERK     |     20 |     4565 |
+| MANAGER   |     20 |   9102.5 |
+| PRESIDENT |     10 |     5500 |
+| SALESMAN  |     30 |     6160 |
++-----------+--------+----------+
+5 rows in set (0.000 sec)
+
+6.Display the department number having atleast 4 employees in it.
+
+SELECT DEPTNO, COUNT(ENAME) AS 'EMP NUMBER >=4'
+FROM EMP
+GROUP BY DEPTNO
+HAVING COUNT(ENAME)>=4;
+
++--------+----------------+
+| DEPTNO | EMP NUMBER >=4 |
++--------+----------------+
+|     20 |              5 |
+|     30 |              6 |
++--------+----------------+
+2 rows in set (0.000 sec)
+
+
+//7.Implement following using case statement. Use data from emp database.
+If comm is null ‘need improvement’ If <500 “ok” If >=500 and < 1000 ‘good' ‘Excellent'.
+
+SELECT *,
+CASE WHEN  COMM IS NULL THEN "need improvement"
+     WHEN COMM<500 THEN "ok"
+     WHEN COMM>=500 AND COMM<1000 THEN "good"
+	 WHEN COMM>1000 THEN "Excellent"
+	 ELSE 'N/A'
+	 END AS "REMARK"
+FROM EMP;
++-------+--------+-----------+------+------------+--------+------+--------+------------------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO | REMARK           |
++-------+--------+-----------+------+------------+--------+------+--------+------------------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 | need improvement |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 | ok               |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 | good             |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 | need improvement |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 | Excellent        |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 | need improvement |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 | need improvement |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 | need improvement |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 | need improvement |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 | ok               |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 | need improvement |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 | need improvement |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 | need improvement |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 | need improvement |
++-------+--------+-----------+------+------------+--------+------+--------+------------------+
+14 rows in set (0.000 sec)
+
+
+
+//8.Display  salary sum and min(sal) for all employees who are managers.
+
+SELECT  JOB, SUM(SAL), MIN(SAL)
+FROM EMP
+WHERE JOB='MANAGER'
+GROUP BY JOB;
+
++---------+----------+----------+
+| JOB     | SUM(SAL) | MIN(SAL) |
++---------+----------+----------+
+| MANAGER |   9102.5 |     2695 |
++---------+----------+----------+
+1 row in set (0.000 sec)
+
+
+//9.Find sum(sal) for each dept having more than 2 clerk. 
+
+SELECT JOB, DEPTNO,SUM(SAL)
+FROM EMP
+WHERE JOB='CLERK'
+GROUP BY JOB
+HAVING COUNT(*)>2;
++-------+--------+----------+
+| JOB   | DEPTNO | SUM(SAL) |
++-------+--------+----------+
+| CLERK |     20 |     4565 |
++-------+--------+----------+
+1 row in set (0.000 sec)
+
+
+//10.Calculate how many employees earn sal more than 1500 in each dept.
+
+SELECT JOB,DEPTNO,COUNT(*) AS 'NO OF EMP'
+FROM EMP
+WHERE SAL>1500
+GROUP BY DEPTNO;
+
++----------+--------+-----------+
+| JOB      | DEPTNO | NO OF EMP |
++----------+--------+-----------+
+| MANAGER  |     10 |         2 |
+| MANAGER  |     20 |         3 |
+| SALESMAN |     30 |         3 |
++----------+--------+-----------+
+3 rows in set (0.000 sec)
+
+//11.List mgr and number of employees reporting to each mgr(manager)
+Please consider mgr as manager no and not the job manager.
+
+SELECT DEPTNO, COUNT(*) AS 'NO OF EMP'
+FROM EMP
+GROUP BY MGR;
+
++--------+-----------+
+| DEPTNO | NO OF EMP |
++--------+-----------+
+|     10 |         1 |
+|     20 |         2 |
+|     30 |         5 |
+|     10 |         1 |
+|     20 |         1 |
+|     20 |         3 |
+|     20 |         1 |
++--------+-----------+
+7 rows in set (0.000 sec)
+
+
+//12.Display dept with maximun employees. Display deptno and the employee count.
+
+SELECT DEPTNO, COUNT(*) AS 'NO OF EMP'
+FROM EMP
+GROUP BY DEPTNO
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+
++--------+-----------+
+| DEPTNO | NO OF EMP |
++--------+-----------+
+|     30 |         6 |
++--------+-----------+
+1 row in set (0.000 sec)
+
+
+
+

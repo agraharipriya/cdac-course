@@ -1,0 +1,892 @@
+----------------------------------------------------------------Category Table------------------------------------------------------------------
+create table category(
+       cid int primary key,
+       cname varchar (15) unique not null,
+       description varchar (30)     
+     );
+     
+INSERT INTO category
+VALUES (1,'chips','very crunchy'),
+		(2,'chocolate','very chocolaty'),
+		(3,'snacks','yummy'),
+		(4,'cold drinks','thanda thanda cool cool');
+		
+ SELECT * FROM category;
++-----+-------------+-------------------------+
+| cid | cname       | description             |
++-----+-------------+-------------------------+
+|   1 | chips       | very crunchy            |
+|   2 | chocolate   | very chocolaty          |
+|   3 | snacks      | yummy                   |
+|   4 | cold drinks | thanda thanda cool cool |
++-----+-------------+-------------------------+
+4 rows in set (0.000 sec)
+
+-----------------------------------------------------------------SALESMAN TABLE-----------------------------------------------------------------
+create table salesman
+(
+   sid int primary key,
+   sname varchar (15) unique not null,
+   city varchar (15)
+);
+INSERT INTO salesman
+VALUES (11,'Rahul','Pune'),
+		(12,'Kirti','Mumbai'),
+		(13,'Prasad','Nashik'),
+		(14,'Arnav','Amravati');
+
+SELECT * FROM salesman;
++-----+--------+----------+
+| sid | sname  | city     |
++-----+--------+----------+
+|  11 | Rahul  | Pune     |
+|  12 | Kirti  | Mumbai   |
+|  13 | Prasad | Nashik   |
+|  14 | Arnav  | Amravati |
++-----+--------+----------+
+4 rows in set (0.000 sec)
+
+--------------------------------------------------------------------PRODUCT TABLE-------------------------------------------------------------------------
+
+create table Product(
+   pid  int primary key,
+   pname varchar (20),
+   qty int check(qty>0),
+   price float (6,2) default 20.00,
+   cid int  ,
+   sid int,
+   constraint fk_p_cid foreign key(cid) references category(cid) , 
+   constraint fk_p_sid foreign key(sid) references salesman(sid)  
+   );
+
+INSERT INTO Product
+VALUES (123,'lays',30,30.00,1,12),
+       (111,'pepsi',40,50.00,4,11),
+       (134,'nachos',50,50.00,1,12),
+       (124,'dairy milk',40,60.00,2,14),
+       (125,'pringles',40,60.00,1,14),
+       (213,'Sketch Pens',56,150.00,null,11),
+       (167,'eraser',90,5.00,null,null);
+
+
+ SELECT * FROM Product;
++-----+-------------+------+--------+------+------+
+| pid | pname       | qty  | price  | cid  | sid  |
++-----+-------------+------+--------+------+------+
+| 111 | pepsi       |   40 |  50.00 |    4 |   11 |
+| 123 | lays        |   30 |  30.00 |    1 |   12 |
+| 124 | dairy milk  |   40 |  60.00 |    2 |   14 |
+| 125 | pringles    |   40 |  60.00 |    1 |   14 |
+| 134 | nachos      |   50 |  50.00 |    1 |   12 |
+| 167 | eraser      |   90 |   5.00 | NULL | NULL |
+| 213 | Sketch Pens |   56 | 150.00 | NULL |   11 |
++-----+-------------+------+--------+------+------+
+7 rows in set (0.000 sec)
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+//1.List all pid,pname,cid,cname  with category chips
+
+SELECT p.pid,p.pname,p.cid,c.cname
+FROM Product p, category c
+WHERE p.cid=c.cid and c.cname='chips';
+
++-----+----------+------+-------+
+| pid | pname    | cid  | cname |
++-----+----------+------+-------+
+| 123 | lays     |    1 | chips |
+| 125 | pringles |    1 | chips |
+| 134 | nachos   |    1 | chips |
++-----+----------+------+-------+
+3 rows in set (0.000 sec)
+
+//2.Display all products sold by kirti
+
+SELECT p.pname
+FROM Product p, salesman s
+WHERE p.sid=s.sid and s.sname='Kirti';
+
++--------+
+| pname  |
++--------+
+| lays   |
+| nachos |
++--------+
+2 rows in set (0.000 sec)
+
+
+//3.Display all salesmen who did not sell any product.
+
+SELECT sname, sid
+FROM salesman
+WHERE sid NOT IN (
+  SELECT sid
+  FROM Product
+  WHERE sid IS NOT NULL
+);
+
++--------+-----+
+| sname  | sid |
++--------+-----+
+| Prasad |  13 |
++--------+-----+
+1 row in set (0.001 sec)
+
+
+//4. Display all category for which no product is assigned
+
+SELECT cid,cname
+FROM category
+WHERE cid NOT IN (
+	SELECT cid
+	FROM Product
+	WHERE cid IS NOT NULL);
+	
++-----+--------+
+| cid | cname  |
++-----+--------+
+|   3 | snacks |
++-----+--------+
+1 row in set (0.000 sec)
+
+
+//5. Display all products to which  category is  not assigned.
+
+SELECT *
+FROM Product
+WHERE cid NOT IN (SELECT cid
+					FROM category)
+		OR cid IS NULL;
+
+
++-----+-------------+------+--------+------+------+
+| pid | pname       | qty  | price  | cid  | sid  |
++-----+-------------+------+--------+------+------+
+| 167 | eraser      |   90 |   5.00 | NULL | NULL |
+| 213 | Sketch Pens |   56 | 150.00 | NULL |   11 |
++-----+-------------+------+--------+------+------+
+2 rows in set (0.000 sec)
+
+
+
+//6. Display count of products to whom category is not assigned.
+
+SELECT count(*)
+FROM Product
+WHERE cid NOT IN (SELECT cid
+					FROM category)
+		OR cid IS NULL;
+		
++----------+
+| count(*) |
++----------+
+|        2 |
++----------+
+1 row in set (0.000 sec)
+
+
+//7. Write a query to list proid,pname,catid and price of all products whose price is more than the average price of the products in that category.
+
+SELECT p1.pid,p1.pname,p1.cid,p1.price
+FROM Product p1
+WHERE p1.price > (SELECT AVG(p2.price)
+					FROM Product p2
+					WHERE p1.cid=p2.cid);
+					
++-----+----------+------+-------+
+| pid | pname    | cid  | price |
++-----+----------+------+-------+
+| 125 | pringles |    1 | 60.00 |
+| 134 | nachos   |    1 | 50.00 |
++-----+----------+------+-------+
+2 rows in set (0.000 sec)
+
+
+//8. List count of products sold by each salesman.
+
+SELECT sname ,
+    (SELECT COUNT(*) 
+    FROM Product 
+    WHERE sid = S.sid) AS 'NumberOfProductsSold'
+FROM salesman S;
+
+
++--------+----------------------+
+| sname  | NumberOfProductsSold |
++--------+----------------------+
+| Arnav  |                    2 |
+| Kirti  |                    2 |
+| Prasad |                    0 |
+| Rahul  |                    2 |
++--------+----------------------+
+4 rows in set (0.000 sec)
+
+
+--------------------------------------------------------------------EMP TABLE-----------------------------------------------------------
+
+ SELECT * FROM EMP;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+14 rows in set (0.000 sec)
+
+
+//2.List all employees reporting to the mgr to whom Smith reports.
+
+SELECT * 
+FROM EMP
+WHERE MGR=(SELECT MGR
+FROM EMP
+WHERE ENAME='SMITH');
+
++-------+-------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+-------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK | 7902 | 1980-12-17 |  880 | NULL |     20 |
++-------+-------+-------+------+------------+------+------+--------+
+1 row in set (0.000 sec)
+
+
+//3.Try out on delete set null/cascade and on update set null/cascade done in class.
+
+---------------------------------dept1-----------------------------------
+create table dept1
+(dno int,
+ dname varchar(12),
+ constraint pk_dno primary key(dno)
+);
+insert into dept1
+values(10,'R&D'),(20,'Training'),(30,'Development'),(40,'Mkt');
+
++-----+-------------+
+| dno | dname       |
++-----+-------------+
+|  10 | R&D         |
+|  20 | Training    |
+|  30 | Development |
+|  40 | Mkt         |
++-----+-------------+
+4 rows in set (0.000 sec)
+
+
+----------------------------------emp1----------------------------------
+
+
+//ON DELETE SET NULL---
+
+create table emp2
+(eno int,
+ ename varchar(15),
+ sal int,
+ deptno int,
+ constraint pk_eno primary key(eno),
+ constraint fk_deptno2 foreign key(deptno) references dept1(dno)
+);
+
+insert into emp2
+values(1,'Sumit',20000,10),(2,'Geeta',30000,10),
+(3,'Seema',12000,20),(4,'Sumit',42000,30),(5,'Seeta',35000,10),
+(6,'Sanjay',44000,20); 
+
++-----+--------+-------+--------+
+| eno | ename  | sal   | deptno |
++-----+--------+-------+--------+
+|   1 | Sumit  | 20000 |     10 |
+|   2 | Geeta  | 30000 |     10 |
+|   3 | Seema  | 12000 |     20 |
+|   4 | Sumit  | 42000 |     30 |
+|   5 | Seeta  | 35000 |     10 |
+|   6 | Sanjay | 44000 |     20 |
++-----+--------+-------+--------+
+6 rows in set (0.000 sec)
+
+A) WITHOUT ON DELETE SET NULL
+
+DELETE FROM dept1 WHERE dno=10;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`Automobile`.`emp2`, CONSTRAINT `fk_deptno2` FOREIGN KEY (`deptno`) REFERENCES `dept1` (`dno`))
+
+NOW WITH ADDING 'ON DELETE SET NULL'
+
+
+create table emp3
+(eno int,
+ ename varchar(15),
+ sal int,
+ deptno int,
+ constraint pk_eno primary key(eno),
+ constraint fk_deptno3 foreign key(deptno) references dept1(dno)
+ ON DELETE SET NULL);
+
+insert into emp3
+values(1,'Sumit',20000,10),(2,'Geeta',30000,10),
+(3,'Seema',12000,20),(4,'Sumit',42000,30),(5,'Seeta',35000,10),
+(6,'Sanjay',44000,20);
+
++-----+--------+-------+--------+
+| eno | ename  | sal   | deptno |
++-----+--------+-------+--------+
+|   1 | Sumit  | 20000 |     10 |
+|   2 | Geeta  | 30000 |     10 |
+|   3 | Seema  | 12000 |     20 |
+|   4 | Sumit  | 42000 |     30 |
+|   5 | Seeta  | 35000 |     10 |
+|   6 | Sanjay | 44000 |     20 |
++-----+--------+-------+--------+
+6 rows in set (0.000 sec)
+
+DELETE FROM dept1 WHERE dno=10;
+
+ SELECT * FROM emp3;
++-----+--------+-------+--------+
+| eno | ename  | sal   | deptno |
++-----+--------+-------+--------+
+|   1 | Sumit  | 20000 |   NULL |
+|   2 | Geeta  | 30000 |   NULL |
+|   3 | Seema  | 12000 |     20 |
+|   4 | Sumit  | 42000 |     30 |
+|   5 | Seeta  | 35000 |   NULL |
+|   6 | Sanjay | 44000 |     20 |
++-----+--------+-------+--------+
+6 rows in set (0.000 sec)
+
+//ON DELETE CASCADE-------
+
+create table cat
+(cat_id int auto_increment,
+ cname varchar(12),
+ constraint pk_catid primary key(cat_id)
+);
+
+insert into cat(cname)
+values('Food'),('Stationary'),('Clothes'),('electronics');
+
++--------+-------------+
+| cat_id | cname       |
++--------+-------------+
+|      1 | Food        |
+|      2 | Stationary  |
+|      3 | Clothes     |
+|      4 | electronics |
++--------+-------------+
+4 rows in set (0.000 sec)
+
+create table product1
+(pid int,
+ pname varchar(20),
+ cid int,
+ constraint pk01_pid primary key(pid),
+ constraint fk01_cid foreign key(cid) references cat(cat_id)
+ on delete cascade
+);
+insert into product1
+values(100,'eraser',2),(101,'pen',2),(102,'lays',1),
+(103,'dairy milk',1),(104,'laptop',4),(105,'biscuits',1);
+
++-----+------------+------+
+| pid | pname      | cid  |
++-----+------------+------+
+| 100 | eraser     |    2 |
+| 101 | pen        |    2 |
+| 102 | lays       |    1 |
+| 103 | dairy milk |    1 |
+| 104 | laptop     |    4 |
+| 105 | biscuits   |    1 |
++-----+------------+------+
+6 rows in set (0.000 sec)
+
+
+delete 
+from cat
+where cat_id=1;
+
+select * from cat;
++--------+-------------+
+| cat_id | cname       |
++--------+-------------+
+|      2 | Stationary  |
+|      3 | Clothes     |
+|      4 | electronics |
++--------+-------------+
+3 rows in set (0.000 sec)
+
+ select * from product1;
++-----+--------+------+
+| pid | pname  | cid  |
++-----+--------+------+
+| 100 | eraser |    2 |
+| 101 | pen    |    2 |
+| 104 | laptop |    4 |
++-----+--------+------+
+3 rows in set (0.000 sec)
+
+
+//ON UPDATE SET NULL------------
+
+insert into cat 
+values(1,'Food');
+
+
+create table product2
+(pid int,
+ pname varchar(20),
+ cid int,
+ constraint pk02_pid primary key(pid),
+ constraint fk02_cid1 foreign key(cid) references cat(cat_id)
+ on update set null
+);
+
+insert into product2
+values(100,'eraser',2),(101,'pen',2),(102,'lays',1),
+(103,'dairy milk',1),(104,'laptop',4),(105,'biscuits',1);
+
+
+update cat
+set cat_id=11
+where cat_id=1;
+
+ SELECT * FROM cat;
++--------+-------------+
+| cat_id | cname       |
++--------+-------------+
+|      2 | Stationary  |
+|      3 | Clothes     |
+|      4 | electronics |
+|     11 | Food        |
++--------+-------------+
+4 rows in set (0.000 sec)
+
+SELECT * FROM product2;
++-----+------------+------+
+| pid | pname      | cid  |
++-----+------------+------+
+| 100 | eraser     |    2 |
+| 101 | pen        |    2 |
+| 102 | lays       | NULL |
+| 103 | dairy milk | NULL |
+| 104 | laptop     |    4 |
+| 105 | biscuits   | NULL |
++-----+------------+------+
+6 rows in set (0.000 sec)
+
+
+//ON UPDATE CASCADE-------------
+
+create table product3
+(pid int,
+ pname varchar(20),
+ cid int,
+ constraint pk04_pid primary key(pid),
+ constraint fk04_cid1 foreign key(cid) references cat(cat_id)
+ on update cascade
+);
+
+insert into product3
+  (100,'eraser',2), ,(102,'lays',1),
+(103,'dairy milk',1),(104,'laptop',4),(105,'biscuits',1);
+
+update cat
+set cat_id=22
+select ename,deptno
+from emp
+where deptno in (select deptno   
+                 from dept); where cat_id=2;
+
+select * from cat;
++--------+-------------+
+| cat_id | cname       |
++--------+-------------+
+|      3 | Clothes     |
+|      4 | electronics |
+|     11 | Food        |
+|     22 | Stationary  |
++--------+-------------+
+4 rows in set (0.000 sec)
+
+ select * from product3;
++-----+--------+------+
+| pid | pname  | cid  |
++-----+--------+------+
+| 100 | eraser |   22 |
+| 101 | pen    |   22 |
+| 104 | laptop |    4 |
++-----+--------+------+
+3 rows in set (0.000 sec)
+
+
+
+//4.Practice not in /in  sub queries done in class demao.
+Add new row in emp having deptno 80 and another row with deptno null.
+
+insert into EMP
+values(7791,'Priya','manager',7798, '1981-02-20',3450,400,80),
+		(7799,'Rishita','analyst',7790, '1981-02-20',3400,230,NULL);
+
+| EMPNO | ENAME   | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+---------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH   | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN   | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 |
+|  7521 | WARD    | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 |
+|  7566 | JONES   | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN  | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 |
+|  7698 | BLAKE   | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK   | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT   | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING    | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER  | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS   | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES   | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD    | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER  | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7791 | Priya   | manager   | 7798 | 1981-02-20 |   3450 |  400 |     80 |
+|  7799 | Rishita | analyst   | 7790 | 1981-02-20 |   3400 |  230 |   NULL |
++-------+---------+-----------+------+------------+--------+------+--------+
+
+--list all employes to whome dept is allocated
+
+select ename,deptno
+from EMP
+where deptno in (select deptno   
+                 from DEPT);
+               
+ +--------+--------+
+| ename  | deptno |
++--------+--------+
+| SMITH  |     20 |
+| ALLEN  |     30 |
+| WARD   |     30 |
+| JONES  |     20 |
+| MARTIN |     30 |
+| BLAKE  |     30 |
+| CLARK  |     10 |
+| SCOTT  |     20 |
+| KING   |     10 |
+| TURNER |     30 |
+| ADAMS  |     20 |
+| JAMES  |     30 |
+| FORD   |     20 |
+| MILLER |     10 |
++--------+--------+
+14 rows in set (0.000 sec)
+
+--list all employees to whome dep is not correctly assigned
+
+select ename,deptno
+from EMP
+where deptno not in (select deptno   
+                     from DEPT) 
+or deptno is null;
+
++---------+--------+
+| ename   | deptno |
++---------+--------+
+| Priya   |     80 |
+| Rishita |   NULL |
++---------+--------+
+2 rows in set (0.000 sec)
+
+---------------------------------------------------------Extra assignments on Date and Time Functions--------------------------------------
+
+//1.Write a query to display the first day of the month (in datetime format) three months before the current month.
+ Sample current date : 2014-09-03
+ Expected result : 2014-06-01
+ 
+ SELECT DATE_FORMAT(CURRENT_DATE()-INTERVAL 3 MONTH,'%Y-%m-01');
++---------------------------------------------------------+
+| DATE_FORMAT(CURRENT_DATE()-INTERVAL 3 MONTH,'%Y-%m-01') |
++---------------------------------------------------------+
+| 2025-06-01                                              |
++---------------------------------------------------------+
+1 row in set (0.000 sec)
+ 
+ 
+//2.Write a query to display the last day of the month (in datetime format) three months before the current month.
+
+ 
+ SELECT LAST_DAY(CURDATE()-INTERVAL 3 MONTH);
++--------------------------------------+
+| LAST_DAY(CURDATE()-INTERVAL 3 MONTH) |
++--------------------------------------+
+| 2025-06-30                           |
++--------------------------------------+
+1 row in set (0.000 sec)
+
+
+
+//3.Write a query to get the distinct Mondays from hiredate in emp tables.
+	
+	SELECT DISTINCT hiredate
+	FROM EMP
+	WHERE DAYNAME(hiredate)='MONDAY';
+	
++------------+
+| hiredate   |
++------------+
+| 1981-09-28 |
++------------+
+1 row in set (0.000 sec)
+
+	
+//4.Write a query to get the first day of the current year.
+	SELECT DATE_FORMAT(CURDATE(),'%Y-01-01');
++------------------------------------+
+| DATE_FORMAT(CURDATE(), '%Y-01-01') |
++------------------------------------+
+| 2025-01-01                         |
++------------------------------------+
+1 row in set (0.000 sec)
+
+
+//5.Write a query to get the last day of the current year.
+
+SELECT LAST_DAY(MAKEDATE(YEAR(CURDATE()),365));
+
++------------------------------------------+
+| LAST_DAY(MAKEDATE(YEAR(CURDATE()), 365)) |
++------------------------------------------+
+| 2025-12-31                               |
++------------------------------------------+
+1 row in set (0.000 sec)
+
+
+//6.Write a query to calculate your age in year.
+
+SELECT FLOOR(DATEDIFF(CURDATE(),'2001-08-18')/365)AGE;
++------+
+| AGE  |
++------+
+|   24 |
++------+
+1 row in set (0.000 sec)
+
+
+//7.Write a query to get the current date in the following format.
+Sample date : 04-sep-2014
+Output : September 4, 2014 
+
+SELECT DATE_FORMAT(CURDATE(),'%M %d ,%Y');
++------------------------------------+
+| DATE_FORMAT(CURDATE(),'%M %d, %Y') |
++------------------------------------+
+| September 19, 2025                 |
++------------------------------------+
+1 row in set (0.000 sec)
+   
+//8.Write a query to get the current date in Thursday September 2014 format.
+
+Thursday September 2014
+SELECT DATE_FORMAT(CURDATE(),'%W %M ,%Y');
+SELECT DATE_FORMAT(CURDATE(),'%w %M ,%Y');
++------------------------------------+
+| DATE_FORMAT(CURDATE(), '%W %M %Y') |
++------------------------------------+
+| Friday September 2025              |
++------------------------------------+
+
+
+//9.Write a query to extract the year from the current date.
+SELECT EXTRACT(YEAR FROM CURDATE());
++------------------------------+
+| EXTRACT(YEAR FROM CURDATE()) |
++------------------------------+
+|                         2025 |
++------------------------------+
+1 row in set (0.000 sec)
+
+
+//10.Write a query to get the first name and hire date from employees table where hire date between '1987-06-01' and '1987-07-30'
+
+SELECT ENAME,SUBSTR(ENAME, 1,1),
+HIREDATE FROM EMP WHERE HIREDATE BETWEEN '1987-06-01' and '1987-07-30';
+Empty set (0.000 sec)
+
+
+//11.Write a query to display the current date in the following format.
+Sample output: Thursday 4th September 2014 00:00:00
+
+SELECT DATE_FORMAT(SYSDATE(),'%W %D %M %Y %h:%i:%s');
++-----------------------------------------------+
+| DATE_FORMAT(SYSDATE(),'%W %D %M %Y %h:%i:%s') |
++-----------------------------------------------+
+| Friday 19th September 2025 02:09:20           |
++-----------------------------------------------+
+SELECT DATE_FORMAT(NOW(),'%W %D %M %Y %h:%m:%s');
+
+//12.Write a query to display the current date in the following format.
+Sample output: 05/09/2014
+
+SELECT DATE_FORMAT(CURDATE(), '%d/%m/%y');
++------------------------------------+
+| DATE_FORMAT(CURDATE(), '%d/%m/%y') |
++------------------------------------+
+| 19/09/25                           |
++------------------------------------+
+1 row in set (0.000 sec)
+
+
+//13.Write a query to display the current date in the following format.
+Sample output: 12:00 AM Sep 5, 2014
+
+select date_format(now(), '%h:%i %p %b  %d , %Y');
+
++--------------------------------------------+
+| date_format(now(), '%h:%i %p %b  %d , %Y') |
++--------------------------------------------+
+| 04:39 PM Sep  19 , 2025                    |
++--------------------------------------------+
+1 row in set (0.000 sec)
+
+
+
+//14.Write a query to get the employees who joined in the month of June.
+
+SELECT * FROM EMP WHERE MONTH(HIREDATE)=06;
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7782 | CLARK | MANAGER | 7839 | 1981-06-09 | 2695 | NULL |     10 |
++-------+-------+---------+------+------------+------+------+--------+
+1 row in set (0.000 sec)
+
+
+//15.Write a query to get the years in which more than 4 employees joined.
+
+ select year(hiredate), count(*) from EMP group by year(hiredate) having count(*)>4;
+
++----------------+----------+
+| year(hiredate) | count(*) |
++----------------+----------+
+|           1981 |       12 |
++----------------+----------+
+1 row in set (0.000 sec)
+
+
+//16.Write a query to get first name of employees who joined in 1983.  
+
+select ename from EMP where year(hiredate)=1983;
++-------+
+| ename |
++-------+
+| ADAMS |
++-------+
+1 row in set (0.000 sec)
+
+
+//17.Write a query to get employees whose experience is more than 5 years.
+
+select * from EMP where floor(datediff(curdate(), hiredate)/365)>5;
+
++-------+---------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME   | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+---------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH   | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN   | SALESMAN  | 7698 | 1981-02-20 |   1760 |  300 |     30 |
+|  7521 | WARD    | SALESMAN  | 7698 | 1981-02-22 |   1375 |  500 |     30 |
+|  7566 | JONES   | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN  | SALESMAN  | 7698 | 1981-09-28 |   1375 | 1400 |     30 |
+|  7698 | BLAKE   | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK   | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT   | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING    | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER  | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS   | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES   | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD    | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER  | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7791 | Priya   | manager   | 7798 | 1981-02-20 |   3450 |  400 |     80 |
+|  7799 | Rishita | analyst   | 7790 | 1981-02-20 |   3400 |  230 |   NULL |
++-------+---------+-----------+------+------------+--------+------+--------+
+16 rows in set (0.000 sec)
+
+
+//18.Write a query to get employee ID, name, and date of first salary of the employees. Consider that first salary date is one month after employee joining.
+
+
+ select empno , ename, date_add(hiredate, INTERVAL 1 month)sal_date from EMP;
+ 
++-------+---------+------------+
+| empno | ename   | sal_date   |
++-------+---------+------------+
+|  7369 | SMITH   | 1981-01-17 |
+|  7499 | ALLEN   | 1981-03-20 |
+|  7521 | WARD    | 1981-03-22 |
+|  7566 | JONES   | 1981-05-02 |
+|  7654 | MARTIN  | 1981-10-28 |
+|  7698 | BLAKE   | 1981-06-01 |
+|  7782 | CLARK   | 1981-07-09 |
+|  7788 | SCOTT   | 1983-01-09 |
+|  7839 | KING    | 1981-12-17 |
+|  7844 | TURNER  | 1981-10-08 |
+|  7876 | ADAMS   | 1983-02-12 |
+|  7900 | JAMES   | 1982-01-03 |
+|  7902 | FORD    | 1982-01-03 |
+|  7934 | MILLER  | 1982-02-23 |
+|  7791 | Priya   | 1981-03-20 |
+|  7799 | Rishita | 1981-03-20 |
++-------+---------+------------+
+16 rows in set (0.000 sec)
+
+
+//19.Write a query to get first name, hire date and experience of the employees.
+
+
+select ename, hiredate, floor(datediff(curdate(), hiredate)/365)experience from EMP;
+
++---------+------------+------------+
+| ename   | hiredate   | experience |
++---------+------------+------------+
+| SMITH   | 1980-12-17 |         44 |
+| ALLEN   | 1981-02-20 |         44 |
+| WARD    | 1981-02-22 |         44 |
+| JONES   | 1981-04-02 |         44 |
+| MARTIN  | 1981-09-28 |         44 |
+| BLAKE   | 1981-05-01 |         44 |
+| CLARK   | 1981-06-09 |         44 |
+| SCOTT   | 1982-12-09 |         42 |
+| KING    | 1981-11-17 |         43 |
+| TURNER  | 1981-09-08 |         44 |
+| ADAMS   | 1983-01-12 |         42 |
+| JAMES   | 1981-12-03 |         43 |
+| FORD    | 1981-12-03 |         43 |
+| MILLER  | 1982-01-23 |         43 |
+| Priya   | 1981-02-20 |         44 |
+| Rishita | 1981-02-20 |         44 |
++---------+------------+------------+
+16 rows in set (0.000 sec)
+
+
+//20.Write a query to get the  display year , and number of employees joined in 1981.
+
+
+ SELECT YEAR(hiredate) AS JoinYear,
+ COUNT(*) AS NumEmployees
+ FROM EMP
+ GROUP BY JoinYear
+ HAVING JoinYear = 1981;
+
++----------+--------------+
+| JoinYear | NumEmployees |
++----------+--------------+
+|     1981 |           12 |
++----------+--------------+
+1 row in set (0.000 sec)
+
+
+
+
+
+

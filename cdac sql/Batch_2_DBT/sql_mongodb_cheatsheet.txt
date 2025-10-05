@@ -1,0 +1,354 @@
+
+==============================
+📘 MASTER SQL + MONGODB CHEAT SHEET
+==============================
+
+--------------------------------
+1. SQL BASICS (DDL, DML, DCL, TCL)
+--------------------------------
+-- DDL (Data Definition Language)
+CREATE DATABASE mydb;
+CREATE TABLE emp (id INT PRIMARY KEY, name VARCHAR(100), salary DECIMAL(10,2));
+ALTER TABLE emp ADD dept_id INT;
+DROP TABLE emp;
+
+-- DML (Data Manipulation Language)
+INSERT INTO emp (id, name, salary) VALUES (1, 'Aarav', 50000);
+UPDATE emp SET salary = 60000 WHERE id = 1;
+DELETE FROM emp WHERE id = 1;
+
+-- DCL (Data Control Language)
+GRANT SELECT, INSERT ON emp TO user1;
+REVOKE INSERT ON emp FROM user1;
+
+-- TCL (Transaction Control Language)
+COMMIT;
+ROLLBACK;
+SAVEPOINT sp1;
+
+--------------------------------
+2. CONSTRAINTS
+--------------------------------
+CREATE TABLE dept (
+  dept_id INT PRIMARY KEY,
+  dept_name VARCHAR(100) UNIQUE NOT NULL
+);
+
+ALTER TABLE emp ADD CONSTRAINT fk_dept FOREIGN KEY (dept_id) REFERENCES dept(dept_id);
+ALTER TABLE emp ADD CONSTRAINT chk_salary CHECK (salary >= 0);
+
+--------------------------------
+3. INDEX & VIEWS
+--------------------------------
+-- Index
+CREATE INDEX idx_emp_name ON emp(name);
+DROP INDEX idx_emp_name ON emp;
+
+-- View
+CREATE VIEW high_salary_emp AS
+SELECT name, salary FROM emp WHERE salary > 60000;
+DROP VIEW high_salary_emp;
+
+--------------------------------
+4. AGGREGATES + GROUP BY + HAVING
+--------------------------------
+SELECT dept_id, COUNT(*) AS emp_count, AVG(salary) AS avg_salary
+FROM emp
+GROUP BY dept_id
+HAVING AVG(salary) > 50000;
+
+--------------------------------
+5. WINDOW FUNCTIONS (OVER + PARTITION BY)
+--------------------------------
+SELECT name, dept_id, salary,
+RANK() OVER (PARTITION BY dept_id ORDER BY salary DESC) AS rank_in_dept,
+ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num
+FROM emp;
+
+--------------------------------
+6. JOINS
+--------------------------------
+-- INNER JOIN
+SELECT e.name, d.dept_name
+FROM emp e
+INNER JOIN dept d ON e.dept_id = d.dept_id;
+
+-- LEFT JOIN
+SELECT e.name, d.dept_name
+FROM emp e
+LEFT JOIN dept d ON e.dept_id = d.dept_id;
+
+-- RIGHT JOIN
+SELECT e.name, d.dept_name
+FROM emp e
+RIGHT JOIN dept d ON e.dept_id = d.dept_id;
+
+--------------------------------
+7. SUBQUERIES
+--------------------------------
+-- Non-Correlated Subquery
+SELECT name FROM emp
+WHERE salary > (SELECT AVG(salary) FROM emp);
+
+-- Correlated Subquery
+SELECT name FROM emp e
+WHERE salary > (SELECT AVG(salary) FROM emp WHERE dept_id = e.dept_id);
+
+--------------------------------
+8. PL/SQL
+--------------------------------
+-- Procedure
+
+//3.Write a stored procedure which will find avg salary for any deptno passed to it.  Pass deptno as IN  parameter and avg(sal) as out parameter.
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS AVG_SAL;
+CREATE PROCEDURE AVG_SAL(IN DEPT_NO INT, OUT AVG_SALARY DECIMAL(10,2))
+BEGIN
+	SELECT AVG(IFNULL(SAL,0)) INTO AVG_SALARY
+	FROM EMP
+	WHERE DEPTNO=DEPT_NO; 
+END //
+
+DELIMITER ;
+
+mysql> SET @P=30;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL AVG_SAL(@P,@RESULT);
+mysql> SELECT @RESULT;
++---------+
+| @RESULT |
++---------+
+| 1566.67 |
++---------+
+1 row in set (0.00 sec)
+
+
+
+
+
+//5.Pass any number to the procedure and check if it is a perfect number. If the number is perfect, procedure should set value of out parameter as 1 otherwise as 0.   
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS PER_NUM;
+CREATE PROCEDURE PER_NUM(IN NUM INT,OUT RESULT INT)
+BEGIN
+	DECLARE I INT DEFAULT 1;
+	DECLARE SUM INT DEFAULT 0;
+	WHILE (I <= NUM / 2)
+	DO
+		IF ((NUM % I )=0) THEN
+		SET SUM =SUM+ I;
+		END IF;
+ 	SET I=I+1;
+	END WHILE;
+
+	IF (SUM = NUM) THEN
+		SET RESULT=1;
+	ELSE
+	     SET RESULT=0;
+	END IF;
+
+	
+
+END //
+
+DELIMITER ;
+	
+
+mysql> SET @N=6;
+mysql> CALL PER_NUM(@N,@R);
+mysql> SELECT @R;
++------+
+| @R   |
++------+
+|    1 |
++------+
+1 row in set (0.00 s
+
+
+
+
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS IS_PRIME;
+CREATE PROCEDURE IS_PRIME(IN N INT,OUT R INT)
+BEGIN 	
+	DECLARE I INT DEFAULT 2 ;
+	DECLARE isPRIME INT DEFAULT 1;
+	IF (N<=1) THEN
+		SET isPRIME =0; 
+	ELSE
+	WHILE(I<=N/2 )
+	DO
+		IF((N %I )=0) THEN
+		SET isPRIME =0;
+		END IF;
+		SET I=I+1;
+	END WHILE;
+	END IF;
+
+	IF (isPRIME) THEN
+		SET R=1;
+	ELSE 
+		SET R=0;   
+	END IF;
+END //
+
+DELIMITER ;
+
+
+
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS CAL_SAL1;
+CREATE PROCEDURE CAL_SAL1(IN  J VARCHAR(15),OUT P_MAX DECIMAL(7,2))
+BEGIN
+	SET P_MAX=CAL_SAL(J);
+	
+END //
+DELIMITER ;	
+
+SET GLOBAL LOG_BIN_TRUST_FUNCTION_CREATORS=1;
+DELIMITER //
+DROP FUNCTION IF EXISTS CAL_SAL;
+CREATE FUNCTION CAL_SAL(X VARCHAR(15)) RETURNS DECIMAL(7,2)
+BEGIN
+	 DECLARE M DECIMAL(7,2);
+	 SELECT MAX(SAL) INTO M FROM EMP WHERE JOB=X AND SAL IS NOT NULL;
+	 RETURN M;
+END //
+DELIMITER ;
+
+SET @J='CLERK';
+CALL CAL_SAL1(@J,@M);
+SELECT @M;
+
++---------+
+| @M      |
++---------+
+| 1430.00 |
++---------+
+1 row in set (0.000 sec)
+
+
+
+-- Function
+CREATE OR REPLACE FUNCTION get_salary(p_id INT) RETURN DECIMAL IS
+  v_salary DECIMAL(10,2);
+BEGIN
+  SELECT salary INTO v_salary FROM emp WHERE id = p_id;
+  RETURN v_salary;
+END;
+
+
+	 DELIMITER //
+	 DROP FUNCTION IF EXISTS EMAIL;
+ 	 CREATE FUNCTION EMAIL(x varchar(15),y varchar(15)) RETURNS VARCHAR(15)
+ 	 BEGIN
+ 	 			DECLARE EMAIL_P VARCHAR(20);
+				SET EMAIL_P=CONCAT(SUBSTR(X,1,2),SUBSTR(y,-2,2),'@KNOWIT.COM');
+				RETURN EMAIL_P;
+	END //
+	DELIMITER ;			
+		
+-- Cursor
+DECLARE
+   CURSOR emp_cur IS SELECT name, salary FROM emp;
+   v_name emp.name%TYPE;
+   v_salary emp.salary%TYPE;
+BEGIN
+   OPEN emp_cur;
+   LOOP
+      FETCH emp_cur INTO v_name, v_salary;
+      EXIT WHEN emp_cur%NOTFOUND;
+      DBMS_OUTPUT.PUT_LINE(v_name || ' earns ' || v_salary);
+   END LOOP;
+   CLOSE emp_cur;
+END;
+
+-- Trigger (Before Insert)
+CREATE OR REPLACE TRIGGER trg_before_emp_insert
+BEFORE INSERT ON emp
+FOR EACH ROW
+BEGIN
+   IF :NEW.salary < 0 THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Salary cannot be negative');
+   END IF;
+END;
+
+
+
+
+==========
+//4.Write a cursor which will list all rows having deptno 20;
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS CURSOR_CHK;
+CREATE PROCEDURE CURSOR_CHK()
+BEGIN
+		DECLARE A INT ;	
+		DECLARE B VARCHAR(15);	
+		DECLARE C INT;
+		DECLARE F INT DEFAULT 0;
+	
+		DECLARE CURSOR1 CURSOR FOR
+		SELECT EMPNO,ENAME,DEPTNO 
+		FROM EMP
+		WHERE DEPTNO=20;
+		
+		DECLARE CONTINUE HANDLER FOR
+		NOT FOUND SET F=1;
+		OPEN CURSOR1;
+		DISPLAY : LOOP
+			FETCH CURSOR1 INTO A,B,C;
+			IF F=1
+			THEN 
+				LEAVE DISPLAY;
+			END IF;
+			SELECT A,B,C;
+		END LOOP;
+		CLOSE CURSOR1;
+		
+END //
+
+DELIMITER ;
+
+CALL CURSOR_CHK;
+
+
+
+--------------------------------
+9. MONGODB CRUD
+--------------------------------
+-- Create / Insert
+db.customers.insertOne({name: "Aarav", city: "Pune"});
+db.customers.insertMany([{name: "Isha", city: "Mumbai"}, {name: "Rohan", city: "Delhi"}]);
+
+-- Read
+db.customers.find();
+db.customers.find({city: "Pune"});
+db.customers.find().sort({name: 1}).limit(5);
+
+-- Update
+db.customers.updateOne({name: "Aarav"}, {$set: {city: "Hyderabad"}});
+db.customers.updateMany({city: "Pune"}, {$set: {status: "Active"}});
+
+-- Delete
+db.customers.deleteOne({name: "Rohan"});
+db.customers.deleteMany({city: "Delhi"});
+
+-- Indexes in MongoDB
+db.customers.createIndex({name: 1});
+db.customers.dropIndex("name_1");
+
+-- Aggregation Example
+db.orders.aggregate([
+  {$group: {_id: "$customer_id", total: {$sum: "$amount"}}},
+  {$sort: {total: -1}}
+]);
+
+==============================
+END OF CHEAT SHEET 🚀
+==============================

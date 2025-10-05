@@ -1,0 +1,726 @@
+📘 E-commerce Database
+
+-- Create database
+CREATE DATABASE IF NOT EXISTS ecommerce_exam;
+USE ecommerce_exam;
+
+-- Customers
+CREATE TABLE customers (
+  customer_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL,
+  phone VARCHAR(20),
+  city VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ select * from customers;
++-------------+--------------+--------------------+------------+-----------+---------------------+
+| customer_id | name         | email              | phone      | city      | created_at          |
++-------------+--------------+--------------------+------------+-----------+---------------------+
+|           1 | Aarav Sharma | aarav@example.com  | 9876543210 | Pune      | 2025-09-24 21:10:49 |
+|           2 | Isha Patel   | isha@example.com   | 9876543211 | Mumbai    | 2025-09-24 21:10:49 |
+|           3 | Rohan Mehta  | rohan@example.com  | 9876543212 | Pune      | 2025-09-24 21:10:49 |
+|           4 | Sara Khan    | sara@example.com   | 9876543213 | Delhi     | 2025-09-24 21:10:49 |
+|           5 | Vikram Rao   | vikram@example.com | 9876543214 | Hyderabad | 2025-09-24 21:10:49 |
++-------------+--------------+--------------------+------------+-----------+---------------------+
+5 rows in set (0.00 sec)
+
+===========================================================================================
+-- Products
+CREATE TABLE products (
+  product_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  category VARCHAR(100),
+  price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+  stock INT NOT NULL CHECK (stock >= 0),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+mysql> select * from products;
++------------+---------------------+-------------+---------+-------+---------------------+
+| product_id | name                | category    | price   | stock | created_at          |
++------------+---------------------+-------------+---------+-------+---------------------+
+|          1 | Wireless Mouse      | Electronics |  899.00 |   100 | 2025-09-24 21:10:59 |
+|          2 | Mechanical Keyboard | Electronics | 3499.00 |    50 | 2025-09-24 21:10:59 |
+|          3 | Office Chair        | Furniture   | 5999.00 |    20 | 2025-09-24 21:10:59 |
+|          4 | Coffee Mug          | Home        |  249.00 |   200 | 2025-09-24 21:10:59 |
+|          5 | Notebook Pack       | Stationery  |  199.00 |   300 | 2025-09-24 21:10:59 |
+|          6 | LED Monitor 24"     | Electronics | 9999.00 |    15 | 2025-09-24 21:10:59 |
+|          7 | Phone Stand         | Accessories |  299.00 |   120 | 2025-09-24 21:10:59 |
+|          8 | USB-C Cable         | Electronics |  399.00 |   150 | 2025-09-24 21:10:59 |
++------------+---------------------+-------------+---------+-------+---------------------+
+8 rows in set (0.00 sec)
+
+-- Orders
+CREATE TABLE orders (
+  order_id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_id INT NOT NULL,
+  order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('PENDING','PAID','SHIPPED','CANCELLED') DEFAULT 'PENDING',
+  total_amount DECIMAL(12,2) DEFAULT 0,
+  CONSTRAINT fk_orders_customer
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+mysql> select * from orders;
++----------+-------------+---------------------+-----------+--------------+
+| order_id | customer_id | order_date          | status    | total_amount |
++----------+-------------+---------------------+-----------+--------------+
+|        1 |           1 | 2025-09-01 10:00:00 | PAID      |      2545.00 |
+|        2 |           2 | 2025-09-02 12:30:00 | PAID      |     13498.00 |
+|        3 |           3 | 2025-09-03 09:45:00 | PENDING   |      1793.00 |
+|        4 |           4 | 2025-09-05 14:20:00 | SHIPPED   |      6597.00 |
+|        5 |           5 | 2025-09-06 16:10:00 | CANCELLED |       996.00 |
++----------+-------------+---------------------+-----------+--------------+
+5 rows in set (0.00 s
+
+
+-- Order items
+CREATE TABLE order_items (
+  order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL CHECK (quantity > 0),
+  unit_price DECIMAL(10,2) NOT NULL CHECK (unit_price >= 0),
+  CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders(order_id),
+  CONSTRAINT fk_items_product FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+mysql> select * from order_items;
++---------------+----------+------------+----------+------------+
+| order_item_id | order_id | product_id | quantity | unit_price |
++---------------+----------+------------+----------+------------+
+|             1 |        1 |          1 |        2 |     899.00 |
+|             2 |        1 |          4 |        3 |     249.00 |
+|             3 |        2 |          2 |        1 |    3499.00 |
+|             4 |        2 |          6 |        1 |    9999.00 |
+|             5 |        3 |          5 |        5 |     199.00 |
+|             6 |        3 |          8 |        2 |     399.00 |
+|             7 |        4 |          3 |        1 |    5999.00 |
+|             8 |        4 |          7 |        2 |     299.00 |
+|             9 |        5 |          4 |        4 |     249.00 |
++---------------+----------+------------+----------+------------+
+9 rows in set (0.00 sec)
+
+-- Payments
+CREATE TABLE payments (
+  payment_id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  amount DECIMAL(12,2) NOT NULL CHECK (amount >= 0),
+  method ENUM('CARD','UPI','COD','NETBANKING') NOT NULL,
+  paid_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_payments_order FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
+
+mysql> select * from payments;
++------------+----------+----------+--------+---------------------+
+| payment_id | order_id | amount   | method | paid_at             |
++------------+----------+----------+--------+---------------------+
+|          1 |        1 |  2545.00 | UPI    | 2025-09-01 11:00:00 |
+|          2 |        2 | 13498.00 | CARD   | 2025-09-02 13:00:00 |
++------------+----------+----------+--------+---------------------+
+2 rows in set (0.00 sec)
+
+-- Seed customers
+INSERT INTO customers (name, email, phone, city) VALUES
+('Aarav Sharma','aarav@example.com','9876543210','Pune'),
+('Isha Patel','isha@example.com','9876543211','Mumbai'),
+('Rohan Mehta','rohan@example.com','9876543212','Pune'),
+('Sara Khan','sara@example.com','9876543213','Delhi'),
+('Vikram Rao','vikram@example.com','9876543214','Hyderabad');
+
+-- Seed products
+INSERT INTO products (name, category, price, stock) VALUES
+('Wireless Mouse','Electronics',899.00,100),
+('Mechanical Keyboard','Electronics',3499.00,50),
+('Office Chair','Furniture',5999.00,20),
+('Coffee Mug','Home',249.00,200),
+('Notebook Pack','Stationery',199.00,300),
+('LED Monitor 24"','Electronics',9999.00,15),
+('Phone Stand','Accessories',299.00,120),
+('USB-C Cable','Electronics',399.00,150);
+
+-- Seed orders
+INSERT INTO orders (customer_id, order_date, status, total_amount) VALUES
+(1,'2025-09-01 10:00:00','PAID',0),
+(2,'2025-09-02 12:30:00','PAID',0),
+(3,'2025-09-03 09:45:00','PENDING',0),
+(4,'2025-09-05 14:20:00','SHIPPED',0),
+(5,'2025-09-06 16:10:00','CANCELLED',0);
+
+-- Seed order items
+INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
+(1,1,2,899.00),
+(1,4,3,249.00),
+(2,2,1,3499.00),
+(2,6,1,9999.00),
+(3,5,5,199.00),
+(3,8,2,399.00),
+(4,3,1,5999.00),
+(4,7,2,299.00),
+(5,4,4,249.00);
+
+-- Compute and update order totals based on items (Note : run below update statement as well)
+UPDATE orders  o
+
+JOIN (
+  SELECT order_id, SUM(quantity * unit_price) AS total
+  FROM order_items
+  GROUP BY order_id
+) t ON o.order_id = t.order_id
+
+SET o.total_amount = t.total;
+
+-- Seed payments (only for PAID orders)
+INSERT INTO payments (order_id, amount, method, paid_at) VALUES
+(1, (SELECT total_amount FROM orders WHERE order_id=1), 'UPI', '2025-09-01 11:00:00'),
+(2, (SELECT total_amount FROM orders WHERE order_id=2), 'CARD', '2025-09-02 13:00:00');
+
+
+
+------------------------------------------------------------------------
+
+Part 1: SQL Questions & Answers
+
+1. Show all customers who placed at least one order.
+
+    SELECT DISTINCT c.customer_id, c.name, c.email
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id;
+
++-------------+--------------+--------------------+
+| customer_id | name         | email              |
++-------------+--------------+--------------------+
+|           1 | Aarav Sharma | aarav@example.com  |
+|           2 | Isha Patel   | isha@example.com   |
+|           3 | Rohan Mehta  | rohan@example.com  |
+|           4 | Sara Khan    | sara@example.com   |
+|           5 | Vikram Rao   | vikram@example.com |
++-------------+--------------+--------------------+
+5 rows in set (0.00 sec)
+
+2. List customers who have not placed any orders.
+
+    SELECT c.customer_id, c.name
+    FROM customers c
+    LEFT JOIN orders o ON c.customer_id = o.customer_id
+    WHERE o.order_id IS NULL;
+
+Empty set (0.03 sec)
+
+3. Display all orders with customer name and total amount.
+
+    SELECT o.order_id, c.name AS customer_name, o.total_amount, o.status
+    FROM orders o
+    JOIN customers c ON o.customer_id = c.customer_id;
+
++----------+---------------+--------------+-----------+
+| order_id | customer_name | total_amount | status    |
++----------+---------------+--------------+-----------+
+|        1 | Aarav Sharma  |      2545.00 | PAID      |
+|        2 | Isha Patel    |     13498.00 | PAID      |
+|        3 | Rohan Mehta   |      1793.00 | PENDING   |
+|        4 | Sara Khan     |      6597.00 | SHIPPED   |
+|        5 | Vikram Rao    |       996.00 | CANCELLED |
++----------+---------------+--------------+-----------+
+5 rows in set (0.00 sec)
+
+4. Find the top 3 most expensive products.
+
+    SELECT name, price
+    FROM products
+    ORDER BY price DESC
+    LIMIT 3;
++---------------------+---------+
+| name                | price   |
++---------------------+---------+
+| LED Monitor 24"     | 9999.00 |
+| Office Chair        | 5999.00 |
+| Mechanical Keyboard | 3499.00 |
++---------------------+---------+
+3 rows in set (0.00 sec)
+5. Show total sales (sum of payments) per payment method.
+
+    SELECT method, SUM(amount) AS total_sales
+    FROM payments
+    GROUP BY method;
++--------+-------------+
+| method | total_sales |
++--------+-------------+
+| UPI    |     2545.00 |
+| CARD   |    13498.00 |
++--------+-------------+
+2 rows in set (0.00 sec)
+
+6. Find the best-selling product (highest quantity sold).
+
+    SELECT p.name, SUM(oi.quantity) AS total_sold
+    FROM order_items oi
+    JOIN products p ON oi.product_id = p.product_id
+    GROUP BY p.name
+    ORDER BY total_sold DESC
+    LIMIT 1;
+
++------------+------------+
+| name       | total_sold |
++------------+------------+
+| Coffee Mug |          7 |
++------------+------------+
+1 row in set (0.00 sec)
+
+7. Show all pending orders with their items.
+
+    SELECT o.order_id, c.name AS customer, p.name AS product, oi.quantity
+    FROM orders o
+    JOIN customers c ON o.customer_id = c.customer_id
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    WHERE o.status = 'PENDING';
++----------+-------------+---------------+----------+
+| order_id | customer    | product       | quantity |
++----------+-------------+---------------+----------+
+|        3 | Rohan Mehta | Notebook Pack |        5 |
+|        3 | Rohan Mehta | USB-C Cable   |        2 |
++----------+-------------+---------------+----------+
+2 rows in set (0.00 sec)
+
+8. Find customers who bought Electronics products.
+
+    SELECT DISTINCT c.name, c.city
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    WHERE p.category = 'Electronics';
++--------------+--------+
+| name         | city   |
++--------------+--------+
+| Aarav Sharma | Pune   |
+| Isha Patel   | Mumbai |
+| Rohan Mehta  | Pune   |
++--------------+--------+
+3 rows in set (0.00 s
+
+9. Show the total number of orders placed by each city.
+
+    SELECT c.city, COUNT(o.order_id) AS total_orders
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    GROUP BY c.city;
++-----------+--------------+
+| city      | total_orders |
++-----------+--------------+
+| Pune      |            2 |
+| Mumbai    |            1 |
+| Delhi     |            1 |
+| Hyderabad |            1 |
++-----------+--------------+
+4 rows in set (0.01 s
+
+10. Find orders without any payment.
+
+    SELECT o.order_id, c.name, o.total_amount
+    FROM orders o
+    JOIN customers c ON o.customer_id = c.customer_id
+    LEFT JOIN payments p ON o.order_id = p.order_id
+    WHERE p.payment_id IS NULL;
++----------+-------------+--------------+
+| order_id | name        | total_amount |
++----------+-------------+--------------+
+|        3 | Rohan Mehta |      1793.00 |
+|        4 | Sara Khan   |      6597.00 |
+|        5 | Vikram Rao  |       996.00 |
++----------+-------------+--------------+
+3 rows in set (0.00 sec)
+11. Show products that were never ordered.
+
+    SELECT p.product_id, p.name
+    FROM products p
+    LEFT JOIN order_items oi ON p.product_id = oi.product_id
+    WHERE oi.order_id IS NULL;
+
+Empty set (0.00 sec)
+
+12. Show average order value (AOV).
+
+    SELECT AVG(total_amount) AS avg_order_value
+    FROM orders;
+
+| avg_order_value |
++-----------------+
+|     5085.800000 |
++-----------------+
+1 row in set (0.00 sec)
+
+13. Find customers who spent the most money.
+
+    SELECT c.name, SUM(o.total_amount) AS total_spent
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    WHERE o.status IN ('PAID','SHIPPED')
+    GROUP BY c.name
+    ORDER BY total_spent DESC
+    LIMIT 1;
+
++------------+-------------+
+| name       | total_spent |
++------------+-------------+
+| Isha Patel |    13498.00 |
++------------+-------------+
+1 row in set (0.00 s
+
+14. Find the most recent order details.
+
+    SELECT o.order_id, c.name, o.order_date, o.total_amount
+    FROM orders o
+    JOIN customers c ON o.customer_id = c.customer_id
+    ORDER BY o.order_date DESC
+    LIMIT 1;
+
++----------+------------+---------------------+--------------+
+| order_id | name       | order_date          | total_amount |
++----------+------------+---------------------+--------------+
+|        5 | Vikram Rao | 2025-09-06 16:10:00 |       996.00 |
++----------+------------+---------------------+--------------+
+1 row in set (0.00 s
+
+15. Show total stock value (price × stock) of all products.
+
+    SELECT SUM(price * stock) AS total_stock_value
+    FROM products;
+
++-------------------+
+| total_stock_value |
++-------------------+
+|         740045.00 |
++-------------------+
+1 row in set (0.00 sec)
+
+16. Find each customer’s last order.
+
+    SELECT c.name, o.order_id, o.order_date
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    WHERE o.order_date = (
+      SELECT MAX(o2.order_date)
+      FROM orders o2
+      WHERE o2.customer_id = c.customer_id
+    );
+
++--------------+----------+---------------------+
+| name         | order_id | order_date          |
++--------------+----------+---------------------+
+| Aarav Sharma |        1 | 2025-09-01 10:00:00 |
+| Isha Patel   |        2 | 2025-09-02 12:30:00 |
+| Rohan Mehta  |        3 | 2025-09-03 09:45:00 |
+| Sara Khan    |        4 | 2025-09-05 14:20:00 |
+| Vikram Rao   |        5 | 2025-09-06 16:10:00 |
++--------------+----------+---------------------+
+5 rows in set (0.00 sec)
+
+17. Find order with maximum items purchased.
+
+    SELECT o.order_id, SUM(oi.quantity) AS total_items
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    GROUP BY o.order_id
+    ORDER BY total_items DESC
+    LIMIT 1;
+
++----------+-------------+
+| order_id | total_items |
++----------+-------------+
+|        3 |           7 |
++----------+-------------+
+1 row in set (0.00 s
+
+18. Show revenue generated per product.
+
+    SELECT p.name, SUM(oi.quantity * oi.unit_price) AS revenue
+    FROM order_items oi
+    JOIN products p ON oi.product_id = p.product_id
+    GROUP BY p.name
+    ORDER BY revenue DESC;
++---------------------+---------+
+| name                | revenue |
++---------------------+---------+
+| LED Monitor 24"     | 9999.00 |
+| Office Chair        | 5999.00 |
+| Mechanical Keyboard | 3499.00 |
+| Wireless Mouse      | 1798.00 |
+| Coffee Mug          | 1743.00 |
+| Notebook Pack       |  995.00 |
+| USB-C Cable         |  798.00 |
+| Phone Stand         |  598.00 |
++---------------------+---------+
+8 rows in set (0.01 sec)
+
+19. Find the month with highest sales.
+
+    SELECT MONTH(o.order_date) AS month, SUM(o.total_amount) AS sales
+    FROM orders o
+    WHERE o.status IN ('PAID','SHIPPED')
+    GROUP BY MONTH(o.order_date)
+    ORDER BY sales DESC
+    LIMIT 1;
+
++-------+----------+
+| month | sales    |
++-------+----------+
+|     9 | 22640.00 |
++-------+----------+
+1 row in set (0.01 sec)
+
+20. List cancelled orders with customer names.
+
+    SELECT o.order_id, c.name, o.total_amount
+    FROM orders o
+    JOIN customers c ON o.customer_id = c.customer_id
+    WHERE o.status = 'CANCELLED';
++----------+------------+--------------+
+| order_id | name       | total_amount |
++----------+------------+--------------+
+|        5 | Vikram Rao |       996.00 |
++----------+------------+--------------+
+1 row in set (0.00 sec)
+
+
+ Stored Procedures, Functions, and Triggers for E-commerce Database
+
+Stored Procedures
+
+1. Procedure to get all orders of a customer
+
+    DELIMITER //
+    DROP PROCEDURE if exists GetCustomerOrders;
+    CREATE PROCEDURE GetCustomerOrders(IN custId INT)
+    BEGIN
+      SELECT o.order_id, o.order_date, o.status, o.total_amount
+      FROM orders o
+      WHERE o.customer_id = custId;
+    END //
+    DELIMITER ;
+
+Usage:
+
+    CALL GetCustomerOrders(1);
+
+2. Procedure to place an order (basic)
+
+    DELIMITER //
+    CREATE PROCEDURE PlaceOrder(IN custId INT, OUT newOrderId INT)
+    BEGIN
+      INSERT INTO orders(customer_id, status, total_amount)
+      VALUES (custId, 'PENDING', 0);
+      
+      SET newOrderId = LAST_INSERT_ID();
+    END //
+    DELIMITER ;
+
+Usage:
+
+    CALL PlaceOrder(2, @oid);
+    SELECT @oid;
+
+3. Procedure to update order status
+
+    DELIMITER //
+    CREATE PROCEDURE UpdateOrderStatus(IN ordId INT, IN newStatus ENUM('PENDING','PAID','SHIPPED','CANCELLED'))
+    BEGIN
+      UPDATE orders
+      SET status = newStatus
+      WHERE order_id = ordId;
+    END //
+    DELIMITER ;
+
+Usage:
+
+    CALL UpdateOrderStatus(3, 'SHIPPED');
+
+------------------------------------------------------------------------
+
+Functions
+
+1. Function to calculate order total
+
+    DELIMITER //
+    CREATE FUNCTION GetOrderTotal(ordId INT) RETURNS DECIMAL(12,2)
+    DETERMINISTIC
+    BEGIN
+      DECLARE total DECIMAL(12,2);
+      SELECT SUM(quantity * unit_price)
+      INTO total
+      FROM order_items
+      WHERE order_id = ordId;
+      
+      RETURN IFNULL(total,0);
+    END //
+    DELIMITER ;
+
+Usage:
+
+    SELECT GetOrderTotal(1);
+
+2. Function to get customer’s total spend
+
+    DELIMITER //
+    CREATE FUNCTION GetCustomerSpend(custId INT) RETURNS DECIMAL(12,2)
+    DETERMINISTIC
+    BEGIN
+      DECLARE spend DECIMAL(12,2);
+      SELECT SUM(total_amount)
+      INTO spend
+      FROM orders
+      WHERE customer_id = custId AND status IN ('PAID','SHIPPED');
+      
+      RETURN IFNULL(spend,0);
+    END //
+    DELIMITER ;
+
+Usage:
+
+    SELECT GetCustomerSpend(2);
+
+------------------------------------------------------------------------
+
+Triggers
+
+Before Insert Triggers
+
+1. Prevent negative stock in products
+
+    DELIMITER //
+    CREATE TRIGGER before_product_insert
+    BEFORE INSERT ON products
+    FOR EACH ROW
+    BEGIN
+      IF NEW.stock < 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Stock cannot be negative';
+      END IF;
+    END //
+    DELIMITER ;
+
+2. Prevent duplicate emails in customers
+
+    DELIMITER //
+    CREATE TRIGGER before_customer_insert
+    BEFORE INSERT ON customers
+    FOR EACH ROW
+    BEGIN
+      IF EXISTS (SELECT 1 FROM customers WHERE email = NEW.email) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email already exists';
+      END IF;
+    END //
+    DELIMITER ;
+
+------------------------------------------------------------------------
+
+After Insert Triggers
+
+3. Update order total after inserting order_items
+
+    DELIMITER //
+    CREATE TRIGGER after_orderitem_insert
+    AFTER INSERT ON order_items
+    FOR EACH ROW
+    BEGIN
+      UPDATE orders
+      SET total_amount = GetOrderTotal(NEW.order_id)
+      WHERE order_id = NEW.order_id;
+    END //
+    DELIMITER ;
+
+4. Reduce stock after product ordered
+
+    DELIMITER //
+    CREATE TRIGGER after_orderitem_insert_stock
+    AFTER INSERT ON order_items
+    FOR EACH ROW
+    BEGIN
+      UPDATE products
+      SET stock = stock - NEW.quantity
+      WHERE product_id = NEW.product_id;
+    END //
+    DELIMITER ;
+
+------------------------------------------------------------------------
+
+Before Update Trigger
+
+5. Prevent order status change if cancelled
+
+    DELIMITER //
+    CREATE TRIGGER before_order_update
+    BEFORE UPDATE ON orders
+    FOR EACH ROW
+    BEGIN
+      IF OLD.status = 'CANCELLED' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cancelled orders cannot be updated';
+      END IF;
+    END //
+    DELIMITER ;
+
+------------------------------------------------------------------------
+
+After Update Trigger
+
+6. Log status changes
+
+    CREATE TABLE order_logs (
+      log_id INT AUTO_INCREMENT PRIMARY KEY,
+      order_id INT,
+      old_status ENUM('PENDING','PAID','SHIPPED','CANCELLED'),
+      new_status ENUM('PENDING','PAID','SHIPPED','CANCELLED'),
+      changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    DELIMITER //
+    CREATE TRIGGER after_order_update
+    AFTER UPDATE ON orders
+    FOR EACH ROW
+    BEGIN
+      IF OLD.status <> NEW.status THEN
+        INSERT INTO order_logs(order_id, old_status, new_status)
+        VALUES (NEW.order_id, OLD.status, NEW.status);
+      END IF;
+    END //
+    DELIMITER ;
+
+------------------------------------------------------------------------
+
+Before Delete Trigger
+
+7. Prevent deleting paid orders
+
+    DELIMITER //
+    CREATE TRIGGER before_order_delete
+    BEFORE DELETE ON orders
+    FOR EACH ROW
+    BEGIN
+      IF OLD.status = 'PAID' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Paid orders cannot be deleted';
+      END IF;
+    END //
+    DELIMITER ;
+
+------------------------------------------------------------------------
+
+After Delete Trigger
+
+8. Log deleted customers
+
+    CREATE TABLE deleted_customers (
+      customer_id INT,
+      name VARCHAR(100),
+      email VARCHAR(150),
+      deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    DELIMITER //
+    CREATE TRIGGER after_customer_delete
+    AFTER DELETE ON customers
+    FOR EACH ROW
+    BEGIN
+      INSERT INTO deleted_customers(customer_id, name, email)
+      VALUES (OLD.customer_id, OLD.name, OLD.email);
+    END //
+    DELIMITER ;

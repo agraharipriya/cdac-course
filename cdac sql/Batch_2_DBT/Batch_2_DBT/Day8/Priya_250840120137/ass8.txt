@@ -1,0 +1,526 @@
+------------------------------------Mixed Subquery--------------------------
+--------------------------------Faculty Table---------------------
+CREATE TABLE faculty
+     ( 
+       fid int primary key,
+       fname varchar (20) not null,
+       sp_skill1 varchar (30),
+       sp_skill2 varchar (30)
+    );
+
+INSERT INTO faculty 
+VALUES( 10,'Amol','Database','Java'),
+	   ( 11,'Asha','Java','MySQL'),
+	   ( 12,'Kiran','CPP','database'),
+	   ( 13,'Seeta','MySQL','database');
+	   
+SELECT * FROM faculty;
++-----+-------+-----------+-----------+
+| fid | fname | sp_skill1 | sp_skill2 |
++-----+-------+-----------+-----------+
+|  10 | Amol  | Database  | Java      |
+|  11 | Asha  | Java      | MySQL     |
+|  12 | Kiran | CPP       | database  |
+|  13 | Seeta | MySQL     | database  |
++-----+-------+-----------+-----------+
+4 rows in set (0.000 sec)
+
+------------------------------Room Table------------------------------
+
+CREATE TABLE room(
+   rid int primary key,
+   rname varchar(15) not null,
+   rloc varchar(20));
+   
+INSERT INTO room 
+VALUES  (100,'Jasmin','1st floor'),
+		(101,'Rose','2nd floor'),
+		(105,'Lotus','1st floor'),
+		(103,'Mogra','1st floor');
+		
+ SELECT * FROM room;
++-----+--------+-----------+
+| rid | rname  | rloc      |
++-----+--------+-----------+
+| 100 | Jasmin | 1st floor |
+| 101 | Rose   | 2nd floor |
+| 103 | Mogra  | 1st floor |
+| 105 | Lotus  | 1st floor |
++-----+--------+-----------+
+4 rows in set (0.000 sec)
+
+-----------------------------------Courses table-----------------------
+
+CREATE TABLE Courses(
+   cid int primary key,
+   cname varchar (15) not null  ,
+   rid int, 
+   fid int,
+   foreign key(rid) references room(rid) on delete set null,
+   foreign key(fid) references faculty(fid) on delete set null);
+
+INSERT INTO Courses 
+VALUES  (121,'DBDA',100,10),
+		(131,'DAC',101,NULL),
+		(141,'DTISS',NULL,NULL),
+		(151,'DOIT',105,12);
+
+SELECT * FROM Courses;
++-----+-------+------+------+
+| cid | cname | rid  | fid  |
++-----+-------+------+------+
+| 121 | DBDA  |  100 |   10 |
+| 131 | DAC   |  101 | NULL |
+| 141 | DTISS | NULL | NULL |
+| 151 | DOIT  |  105 |   12 |
++-----+-------+------+------+
+4 rows in set (0.000 sec)
+
+
+//1.List all rooms which are not allocated to any courses.
+
+SELECT r.rid, r.rname,r.rloc
+FROM room r
+WHERE NOT EXISTS (SELECT c.rid
+					FROM Courses c
+					WHERE c.rid=r.rid);
+
+
++-----+-------+-----------+
+| rid | rname | rloc      |
++-----+-------+-----------+
+| 103 | Mogra | 1st floor |
++-----+-------+-----------+
+1 row in set (0.001 sec)
+
+//2. List all faculties conducting module MySQL.
+
+SELECT DISTINCT f1.fname,f1.fid
+FROM faculty f1
+INNER JOIN Courses c
+			  ON  f1.fid=c.fid
+			  AND c.cname='MySQL';
+  	Empty set (0.000 sec)
+
+
+//3.Generate detailed report as follows for all courses
+cid,cname,rid,rname,rloc,fid,fname
+
+SELECT c.cid,c.cname,r.rid,r.rname,r.rloc,c.fid,f.fname,f.fid,c.rid
+FROM Courses c
+JOIN room r
+ON c.rid=r.rid
+JOIN faculty f
+on f.fid=c.fid;
+
++-----+-------+-----+--------+-----------+------+-------+-----+------+
+| cid | cname | rid | rname  | rloc      | fid  | fname | fid | rid  |
++-----+-------+-----+--------+-----------+------+-------+-----+------+
+| 121 | DBDA  | 100 | Jasmin | 1st floor |   10 | Amol  |  10 |  100 |
+| 151 | DOIT  | 105 | Lotus  | 1st floor |   12 | Kiran |  12 |  105 |
++-----+-------+-----+--------+-----------+------+-------+-----+------+
+
+
+
+//4. list all rooms which are allocated or not allocated to any courses.
+
+SELECT
+    r.rid,
+    r.rname,
+    c.cid,
+    c.cname
+FROM room r
+LEFT JOIN Courses c
+ON r.rid = c.rid;
+
++-----+--------+------+-------+
+| rid | rname  | cid  | cname |
++-----+--------+------+-------+
+| 100 | Jasmin |  121 | DBDA  |
+| 101 | Rose   |  131 | DAC   |
+| 105 | Lotus  |  151 | DOIT  |
+| 103 | Mogra  | NULL | NULL  |
++-----+--------+------+-------+
+4 rows in set (0.000 sec)
+
+
+//5.display courses and faculty assigned to those courses whose special skill is database.
+
+SELECT c.cid,c.cname,f.fid,f.fname,f.sp_skill1,f.sp_skill2
+FROM Courses c 
+LEFT JOIN faculty f
+ON c.fid=f.fid
+WHERE sp_skill1='database' or sp_skill2='database';
+
++-----+-------+-----+-------+-----------+-----------+
+| cid | cname | fid | fname | sp_skill1 | sp_skill2 |
++-----+-------+-----+-------+-----------+-----------+
+| 121 | DBDA  |  10 | Amol  | Database  | Java      |
+| 151 | DOIT  |  12 | Kiran | CPP       | database  |
++-----+-------+-----+-------+-----------+-----------+
+2 rows in set (0.000 sec)
+
+
+-------------------------------Use emp, dept-------------------------
+
+select * from DEPT;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+
+//Que 1. Find 4th highest sal in emp table
+
+select * from EMP e1  where 3= (select count(distinct sal) from EMP e2 where e2.sal>e1.sal);
++-------+-------+---------+------+------------+------+------+--------+
+| empno | ename | job     | mgr  | hiredate   | sal  | comm | deptno |
++-------+-------+---------+------+------------+------+------+--------+
+|  7698 | BLAKE | MANAGER | 7839 | 1981-05-01 | 2850 | NULL |     30 |
++-------+-------+---------+------+------------+------+------+--------+
+
+//Que 2. List all employees earning sal less than the avg sal  of the dept they work in.
+
+select * from EMP e1 where e1.sal< (select avg(e2.sal) from EMP e2 where e1.deptno=e2.deptno ) order by deptno;
++-------+--------+----------+------+------------+------+------+--------+
+| empno | ename  | job      | mgr  | hiredate   | sal  | comm | deptno |
++-------+--------+----------+------+------------+------+------+--------+
+|  7782 | CLARK  | MANAGER  | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300 | NULL |     10 |
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |  950 | NULL |     30 |
++-------+--------+----------+------+------------+------+------+--------+
+
+// Que 3. List ename, deptno and sal of employees earning maximum salary in their dept using correlated query.
+
+ select * from EMP e1  where 1= (select count(distinct sal) from EMP e2 where e2.sal>=e1.sal);
++-------+-------+-----------+------+------------+------+------+--------+
+| empno | ename | job       | mgr  | hiredate   | sal  | comm | deptno |
++-------+-------+-----------+------+------------+------+------+--------+
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
++-------+-------+-----------+------+------------+------+------+--------+
+
+
+//Que 4. List ename, deptno and sal of employees earning maximum salary in their dept using partition by clause
+
+select   ename, deptno, sal from(select distinct ename, deptno, sal,max(sal)over(partition by d
+eptno)as max_sal_in_dept from EMP)sub where sal=max_sal_in_dept;
++-------+--------+------+
+| ename | deptno | sal  |
++-------+--------+------+
+| KING  |     10 | 5000 |
+| SCOTT |     20 | 3000 |
+| FORD  |     20 | 3000 |
+| BLAKE |     30 | 2850 |
++-------+--------+------+
+
+
+//Que 5. List all employes allocated with correct deptno. Use correlated query.
+
+
+select ename, deptno, sal from  EMP e where deptno=(select d.deptno from DEPT d where d.deptno=e.deptno);
++--------+--------+------+
+| ename  | deptno | sal  |
++--------+--------+------+
+| SMITH  |     20 |  800 |
+| ALLEN  |     30 | 1600 |
+| WARD   |     30 | 1250 |
+| JONES  |     20 | 2975 |
+| MARTIN |     30 | 1250 |
+| BLAKE  |     30 | 2850 |
+| CLARK  |     10 | 2450 |
+| SCOTT  |     20 | 3000 |
+| KING   |     10 | 5000 |
+| TURNER |     30 | 1500 |
+| ADAMS  |     20 | 1100 |
+| JAMES  |     30 |  950 |
+| FORD   |     20 | 3000 |
+| MILLER |     10 | 1300 |
++--------+--------+------+
+14 rows in set (0.00 sec)
+
+
+
+
+//Que 6. List the details of dept in which no emp is working. Use correlated query.
+
+select * from DEPT d 
+where not exists 		
+					(select e.deptno 
+					from EMP e
+					 where d.deptno=e.deptno);
++--------+------------+--------+
+| deptno | dname      | loc    |
++--------+------------+--------+
+|     40 | OPERATIONS | BOSTON |
++--------+------------+--------+
+
+
+//Que 7. Company decides to give rise to all employees depending on their salary grade. Information of which is stored in increment table. Create the table. Stored the data and solve the query.
+Create  table increment
+(
+    grade int,
+    hike int
+);
+insert following data
+(1,10),(2,7),(3,5),(4,2),(5,null)
+
+
+Consider emp,dept,salgrade and increment table .
+Display empno,ename,deptno,dname,sal,grade  and hike for all employees. 
+
+
+select e.empno, e.ename, e.deptno, d.dname, e.sal , s.grade , i.hike 
+from EMP e join DEPT d on e.deptno=d.deptno 
+join SALGRADE s on e.sal between s.losal and s.hisal join increment i
+ on i.grade = s.grade;
++-------+--------+--------+------------+------+-------+------+
+| empno | ename  | deptno | dname      | sal  | grade | hike |
++-------+--------+--------+------------+------+-------+------+
+|  7369 | SMITH  |     20 | RESEARCH   |  800 |     1 |   10 |
+|  7876 | ADAMS  |     20 | RESEARCH   | 1100 |     1 |   10 |
+|  7900 | JAMES  |     30 | SALES      |  950 |     1 |   10 |
+|  7521 | WARD   |     30 | SALES      | 1250 |     2 |    7 |
+|  7654 | MARTIN |     30 | SALES      | 1250 |     2 |    7 |
+|  7934 | MILLER |     10 | ACCOUNTING | 1300 |     2 |    7 |
+|  7499 | ALLEN  |     30 | SALES      | 1600 |     3 |    5 |
+|  7844 | TURNER |     30 | SALES      | 1500 |     3 |    5 |
+|  7566 | JONES  |     20 | RESEARCH   | 2975 |     4 |    2 |
+|  7698 | BLAKE  |     30 | SALES      | 2850 |     4 |    2 |
+|  7782 | CLARK  |     10 | ACCOUNTING | 2450 |     4 |    2 |
+|  7788 | SCOTT  |     20 | RESEARCH   | 3000 |     4 |    2 |
+|  7902 | FORD   |     20 | RESEARCH   | 3000 |     4 |    2 |
+|  7839 | KING   |     10 | ACCOUNTING | 5000 |     5 | NULL |
++-------+--------+--------+------------+------+-------+------+
+
+
+//Que 8. Consider emp and dept  table display empno,ename,deptno, dname and loc for all employees who are working as managers.
+
+select e.empno, e.ename, e.deptno,e.job,d.dname, d.loc 
+from EMP e 
+join DEPT d 
+ON e.deptno=d.deptno where job='Manager';
++-------+-------+--------+---------+------------+----------+
+| empno | ename | deptno | job     | dname      | loc      |
++-------+-------+--------+---------+------------+----------+
+|  7782 | CLARK |     10 | MANAGER | ACCOUNTING | NEW YORK |
+|  7566 | JONES |     20 | MANAGER | RESEARCH   | DALLAS   |
+|  7698 | BLAKE |     30 | MANAGER | SALES      | CHICAGO  |
++-------+-------+--------+---------+------------+----------+
+
+
+
+//Que 9. Copy table emp  as emp10 and dept as dept10
+						AND
+//Ques-11.Practice alter clause
+Add following constraints on the emp10 and dept10 tables
+
+Emp table
+Empno -pk
+Ename -nn
+Deptno -fk
+
+Dept table
+Deptno-pk
+Loc – unique nn
+Dname – unique nn
+
+
+create table emp10 as select * from EMP;
+
+create table dept10 as select * from DEPT;
+
+alter table dept10 add primary key(deptno);
+
+alter table dept10 modify loc varchar(20) unique not null;
+
+alter table dept10 modify dname varchar(20) unique not null;
+
+describe dept10;
++--------+--------------+------+-----+---------+-------+
+| Field  | Type         | Null | Key | Default | Extra |
++--------+--------------+------+-----+---------+-------+
+| deptno | int unsigned | NO   | PRI | NULL    |       |
+| dname  | varchar(20)  | NO   | UNI | NULL    |       |
+| loc    | varchar(20)  | NO   | UNI | NULL    |       |
++--------+--------------+------+-----+---------+-------+
+
+
+alter table emp10 add primary key(empno);
+
+alter table emp10 modify ename  varchar(20) not null;
+
+alter table emp10 add foreign key(deptno) references dept10(deptno);
+
+describe emp10;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| empno    | int unsigned | NO   | PRI | NULL    |       |
+| ename    | varchar(20)  | NO   |     | NULL    |       |
+| job      | varchar(9)   | YES  |     | NULL    |       |
+| mgr      | int unsigned | YES  |     | NULL    |       |
+| hiredate | date         | YES  |     | NULL    |       |
+| sal      | float        | YES  |     | NULL    |       |
+| comm     | float        | YES  |     | NULL    |       |
+| deptno   | int unsigned | YES  | MUL | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+
+
+//Que 10. Practice rollback, savepoint, commit
+
+
+set autocommit=0;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from T2;
++------+----------+
+| no   | city     |
++------+----------+
+|    1 | aaaa     |
+|    3 | MP       |
+|    6 | Bhopal   |
+|    7 | Goa      |
+|    8 | Amritsar |
+|   10 | hhhhhh   |
++------+----------+
+6 rows in set (0.00 sec)
+
+mysql> insert into T2 values(11,'jjjj');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into T2 values(12,'ffff');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into T2 values(13,'sssss');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from T2;
++------+----------+
+| no   | city     |
++------+----------+
+|    1 | aaaa     |
+|    3 | MP       |
+|    6 | Bhopal   |
+|    7 | Goa      |
+|    8 | Amritsar |
+|   10 | hhhhhh   |
+|   11 | jjjj     |
+|   12 | ffff     |
+|   13 | sssss    |
++------+----------+
+9 rows in set (0.00 sec)
+
+mysql> delete from T2 where no=11;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> delete from T2 where no=12;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from T2;
++------+----------+
+| no   | city     |
++------+----------+
+|    1 | aaaa     |
+|    3 | MP       |
+|    6 | Bhopal   |
+|    7 | Goa      |
+|    8 | Amritsar |
+|   10 | hhhhhh   |
+|   13 | sssss    |
++------+----------+
+7 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from T2;
++------+----------+
+| no   | city     |
++------+----------+
+|    1 | aaaa     |
+|    3 | MP       |
+|    6 | Bhopal   |
+|    7 | Goa      |
+|    8 | Amritsar |
+|   10 | hhhhhh   |
++------+----------+
+6 rows in set (0.00 sec)
+
+mysql> delete from T2 where no=11;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from T2 where no=10;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from T2;
++------+----------+
+| no   | city     |
++------+----------+
+|    1 | aaaa     |
+|    3 | MP       |
+|    6 | Bhopal   |
+|    7 | Goa      |
+|    8 | Amritsar |
++------+----------+
+5 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> select * from T2;
++------+----------+
+| no   | city     |
++------+----------+
+|    1 | aaaa     |
+|    3 | MP       |
+|    6 | Bhopal   |
+|    7 | Goa      |
+|    8 | Amritsar |
+|   10 | hhhhhh   |
++------+----------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
